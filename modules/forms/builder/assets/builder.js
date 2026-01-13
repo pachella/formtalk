@@ -986,10 +986,12 @@ async function editField(fieldId) {
                         const vslVideoUrl = document.getElementById('vslVideoUrl');
                         const vslWaitTime = document.getElementById('vslWaitTime');
                         const vslButtonText = document.getElementById('vslButtonText');
+                        const vslAutoplay = document.getElementById('vslAutoplay');
 
                         if(vslVideoUrl) vslVideoUrl.value = config.video_url || '';
                         if(vslWaitTime) vslWaitTime.value = config.wait_time || 0;
                         if(vslButtonText) vslButtonText.value = config.button_text || 'Continuar';
+                        if(vslAutoplay) vslAutoplay.checked = config.autoplay == 1;
                     }, 50);
                 }
 

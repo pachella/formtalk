@@ -10,6 +10,7 @@
  *
  * Histórico recente:
  * - 11.7: Sistema de pontuação + Melhorias no módulo Leads
+ * - 12.2: Ajustes no campo VSL - Correção do bloqueio do botão + Autoplay
  */
 
-define('APP_VERSION', '11.7');
+define('APP_VERSION', '12.2');

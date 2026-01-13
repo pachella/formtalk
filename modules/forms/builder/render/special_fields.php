@@ -284,6 +284,9 @@ if ($field['type'] === 'vsl'):
                         <?php if ($waitTime > 0): ?>
                             • Aguardar <?= $waitTime ?>s
                         <?php endif; ?>
+                        <?php if (isset($config['autoplay']) && $config['autoplay'] == 1): ?>
+                            • <i class="fas fa-play"></i> Autoplay
+                        <?php endif; ?>
                     </span>
                 </div>
             </div>
