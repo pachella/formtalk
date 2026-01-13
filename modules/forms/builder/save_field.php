@@ -99,6 +99,7 @@ try {
         $config['wait_time'] = intval($_POST['vsl_wait_time'] ?? 0);
         $config['button_text'] = trim($_POST['vsl_button_text'] ?? 'Continuar');
         $config['autoplay'] = isset($_POST['vsl_autoplay']) ? 1 : 0;
+        $config['hide_controls'] = isset($_POST['vsl_hide_controls']) ? 1 : 0;
     }
 
     // Loading config

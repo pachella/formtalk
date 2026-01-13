@@ -987,11 +987,13 @@ async function editField(fieldId) {
                         const vslWaitTime = document.getElementById('vslWaitTime');
                         const vslButtonText = document.getElementById('vslButtonText');
                         const vslAutoplay = document.getElementById('vslAutoplay');
+                        const vslHideControls = document.getElementById('vslHideControls');
 
                         if(vslVideoUrl) vslVideoUrl.value = config.video_url || '';
                         if(vslWaitTime) vslWaitTime.value = config.wait_time || 0;
                         if(vslButtonText) vslButtonText.value = config.button_text || 'Continuar';
                         if(vslAutoplay) vslAutoplay.checked = config.autoplay == 1;
+                        if(vslHideControls) vslHideControls.checked = config.hide_controls == 1;
                     }, 50);
                 }
 

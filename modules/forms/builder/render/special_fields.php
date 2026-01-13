@@ -287,6 +287,9 @@ if ($field['type'] === 'vsl'):
                         <?php if (isset($config['autoplay']) && $config['autoplay'] == 1): ?>
                             • <i class="fas fa-play"></i> Autoplay
                         <?php endif; ?>
+                        <?php if (isset($config['hide_controls']) && $config['hide_controls'] == 1): ?>
+                            • <i class="fas fa-eye-slash"></i> Sem controles
+                        <?php endif; ?>
                     </span>
                 </div>
             </div>

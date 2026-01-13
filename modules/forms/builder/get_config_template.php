@@ -315,6 +315,21 @@ if ($type === 'vsl'):
             </div>
 
             <div>
+                <div class="flex items-center justify-between">
+                    <label class="text-sm text-gray-700 dark:text-zinc-300">
+                        <i class="fas fa-eye-slash mr-1"></i> Esconder Controles
+                    </label>
+                    <label class="switch">
+                        <input type="checkbox" name="vsl_hide_controls" id="vslHideControls">
+                        <span class="slider"></span>
+                    </label>
+                </div>
+                <p class="text-xs text-gray-500 dark:text-zinc-400 mt-1">
+                    <i class="fas fa-info-circle"></i> Remove os controles de play/pause e barra de progresso do vídeo
+                </p>
+            </div>
+
+            <div>
                 <label class="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1">
                     <i class="fas fa-clock mr-1"></i> Tempo de Espera (segundos) *
                 </label>
