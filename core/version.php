@@ -13,6 +13,7 @@
  * - 12.2: Ajustes no campo VSL - Correção do bloqueio do botão + Autoplay
  * - 12.3: Correções completas no VSL - Autoplay via API + Bloqueio robusto + Esconder controles
  * - 12.4: Novo campo Mensagem de Áudio com player customizado
+ * - 12.5: Sistema anti-cache melhorado + Fix upload de áudio
  */
 
-define('APP_VERSION', '12.4');
+define('APP_VERSION', '12.5');

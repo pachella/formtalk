@@ -1,5 +1,12 @@
 <?php
 session_start();
+
+// Headers anti-cache para evitar problemas com JavaScript desatualizado
+header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
+header("Cache-Control: post-check=0, pre-check=0", false);
+header("Pragma: no-cache");
+header("Expires: 0");
+
 require_once(__DIR__ . "/../../../core/db.php");
 require_once(__DIR__ . "/../../../core/config.php");
 require_once __DIR__ . '/../../../core/PermissionManager.php';

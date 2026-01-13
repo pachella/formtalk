@@ -1,39 +1,32 @@
 <?php
-// Iniciar output buffering para capturar qualquer saída inesperada
+// IMPORTANTE: Não deixar NENHUM whitespace antes desta linha
+// Output buffering DEVE ser a primeira coisa
 ob_start();
 
-// Evitar que warnings e notices sejam exibidos
-error_reporting(E_ALL);
+// Desabilitar display de erros PHP
+error_reporting(0);
 ini_set('display_errors', 0);
 
+// Iniciar sessão
 session_start();
 
-// Tentar incluir db.php com tratamento de erro
-try {
-    require_once(__DIR__ . "/../../../core/db.php");
-} catch (Exception $e) {
-    ob_clean();
-    header('Content-Type: application/json; charset=utf-8');
-    http_response_code(500);
-    echo json_encode(['success' => false, 'error' => 'Erro ao conectar ao banco de dados']);
-    exit();
-}
-
-// Limpar qualquer saída anterior e definir header JSON
+// Limpar qualquer output anterior
 ob_clean();
+
+// Definir header JSON IMEDIATAMENTE
 header('Content-Type: application/json; charset=utf-8');
+header('Cache-Control: no-cache, must-revalidate');
 
 // Verificar autenticação
 if (!isset($_SESSION["user_id"])) {
     http_response_code(401);
-    echo json_encode(['success' => false, 'error' => 'Não autorizado']);
-    exit();
+    die(json_encode(['success' => false, 'error' => 'Não autorizado']));
 }
 
+// Verificar método
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     http_response_code(405);
-    echo json_encode(['success' => false, 'error' => 'Método não permitido']);
-    exit();
+    die(json_encode(['success' => false, 'error' => 'Método não permitido']));
 }
 
 try {
@@ -42,6 +35,7 @@ try {
         throw new Exception('Nenhum arquivo foi enviado');
     }
 
+    // Verificar erros de upload
     if ($_FILES['audio']['error'] !== UPLOAD_ERR_OK) {
         $errorMessages = [
             UPLOAD_ERR_INI_SIZE => 'Arquivo muito grande (limite do servidor)',
@@ -52,57 +46,57 @@ try {
             UPLOAD_ERR_CANT_WRITE => 'Erro ao salvar arquivo',
             UPLOAD_ERR_EXTENSION => 'Upload bloqueado por extensão'
         ];
-        $errorMsg = $errorMessages[$_FILES['audio']['error']] ?? 'Erro desconhecido no upload';
-        throw new Exception($errorMsg);
+        throw new Exception($errorMessages[$_FILES['audio']['error']] ?? 'Erro desconhecido');
     }
 
     $file = $_FILES['audio'];
 
-    // Validar tipo de arquivo
-    $allowedMimes = ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/mp4', 'audio/x-m4a', 'audio/mp3'];
+    // Validar extensão
+    $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
     $allowedExtensions = ['mp3', 'wav', 'ogg', 'm4a'];
 
+    if (!in_array($extension, $allowedExtensions)) {
+        throw new Exception('Formato não suportado. Use MP3, WAV, OGG ou M4A');
+    }
+
+    // Validar tamanho (50MB)
+    if ($file['size'] > 50 * 1024 * 1024) {
+        throw new Exception('Arquivo muito grande. Máximo: 50MB');
+    }
+
+    // Validar MIME type
     $finfo = finfo_open(FILEINFO_MIME_TYPE);
     $mimeType = finfo_file($finfo, $file['tmp_name']);
     finfo_close($finfo);
 
-    $extension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
-
-    if (!in_array($mimeType, $allowedMimes) && !in_array($extension, $allowedExtensions)) {
-        throw new Exception('Formato de áudio não suportado. Use MP3, WAV, OGG ou M4A');
+    $allowedMimes = ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/mp4', 'audio/x-m4a', 'audio/mp3'];
+    if (!in_array($mimeType, $allowedMimes)) {
+        throw new Exception('Tipo de arquivo inválido');
     }
 
-    // Validar tamanho (50MB)
-    $maxSize = 50 * 1024 * 1024;
-    if ($file['size'] > $maxSize) {
-        throw new Exception('Arquivo muito grande. Máximo: 50MB');
-    }
-
-    // Criar diretório de uploads se não existir
+    // Criar diretório
     $uploadDir = __DIR__ . '/../../../uploads/audios/';
     if (!file_exists($uploadDir)) {
         if (!mkdir($uploadDir, 0755, true)) {
-            throw new Exception('Erro ao criar diretório de upload');
+            throw new Exception('Erro ao criar diretório');
         }
     }
 
-    // Gerar nome único para o arquivo
-    $uniqueId = uniqid() . '_' . time();
+    // Gerar nome único
+    $uniqueId = uniqid('audio_', true);
     $fileName = $uniqueId . '.' . $extension;
     $filePath = $uploadDir . $fileName;
 
     // Mover arquivo
     if (!move_uploaded_file($file['tmp_name'], $filePath)) {
-        throw new Exception('Erro ao salvar o arquivo no servidor');
+        throw new Exception('Erro ao salvar arquivo');
     }
 
-    // Retornar URL relativa
-    $fileUrl = '/uploads/audios/' . $fileName;
-
+    // Retornar sucesso
     echo json_encode([
         'success' => true,
-        'url' => $fileUrl,
-        'filename' => $fileName
+        'url' => '/uploads/audios/' . $fileName,
+        'filename' => $file['name']
     ]);
 
 } catch (Exception $e) {
@@ -113,5 +107,4 @@ try {
     ]);
 }
 
-ob_end_flush();
-?>
+exit();
