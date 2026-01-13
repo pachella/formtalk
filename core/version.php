@@ -12,6 +12,7 @@
  * - 11.7: Sistema de pontuação + Melhorias no módulo Leads
  * - 12.2: Ajustes no campo VSL - Correção do bloqueio do botão + Autoplay
  * - 12.3: Correções completas no VSL - Autoplay via API + Bloqueio robusto + Esconder controles
+ * - 12.4: Novo campo Mensagem de Áudio com player customizado
  */
 
-define('APP_VERSION', '12.3');
+define('APP_VERSION', '12.4');

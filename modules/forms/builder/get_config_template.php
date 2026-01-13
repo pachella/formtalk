@@ -372,4 +372,77 @@ if ($type === 'vsl'):
     </div>
 <?php
 endif;
+
+// AUDIO_MESSAGE - Mensagem de Áudio
+if ($type === 'audio_message'):
+?>
+    <div id="audioMessageConfig" style="display: none;">
+        <div class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1">
+                    <i class="fas fa-microphone mr-1"></i> Arquivo de Áudio *
+                </label>
+                <input type="file"
+                       name="audio_file"
+                       id="audioFile"
+                       accept="audio/*"
+                       class="w-full px-3 py-2 border border-gray-300 dark:border-zinc-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-zinc-700 dark:text-zinc-100">
+                <p class="text-xs text-gray-500 dark:text-zinc-400 mt-1">
+                    <i class="fas fa-info-circle"></i> Formatos aceitos: MP3, WAV, OGG, M4A (máx: 50MB)
+                </p>
+                <div id="audioPreview" class="mt-2 hidden">
+                    <div class="flex items-center gap-2 p-2 bg-indigo-50 dark:bg-indigo-900/20 rounded">
+                        <i class="fas fa-file-audio text-indigo-600"></i>
+                        <span id="audioFileName" class="text-sm text-indigo-700 dark:text-indigo-300"></span>
+                        <button type="button" onclick="removeAudio()" class="ml-auto text-red-600 hover:text-red-800">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                </div>
+                <input type="hidden" name="audio_url" id="audioUrl" value="">
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1">
+                    <i class="fas fa-clock mr-1"></i> Tempo de Espera (segundos) *
+                </label>
+                <input type="number"
+                       name="audio_wait_time"
+                       id="audioWaitTime"
+                       value="0"
+                       min="0"
+                       max="3600"
+                       class="w-full px-3 py-2 border border-gray-300 dark:border-zinc-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-zinc-700 dark:text-zinc-100"
+                       required>
+                <p class="text-xs text-gray-500 dark:text-zinc-400 mt-1">
+                    <i class="fas fa-info-circle"></i> Botão de avançar será liberado após este tempo (0 = imediato)
+                </p>
+            </div>
+
+            <div>
+                <label class="block text-sm font-medium text-gray-700 dark:text-zinc-300 mb-1">
+                    <i class="fas fa-mouse-pointer mr-1"></i> Texto do Botão
+                </label>
+                <input type="text"
+                       name="audio_button_text"
+                       id="audioButtonText"
+                       value="Continuar"
+                       maxlength="50"
+                       placeholder="Continuar"
+                       class="w-full px-3 py-2 border border-gray-300 dark:border-zinc-600 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-zinc-700 dark:text-zinc-100">
+                <p class="text-xs text-gray-500 dark:text-zinc-400 mt-1">
+                    <i class="fas fa-info-circle"></i> Personalize o texto do botão de avançar
+                </p>
+            </div>
+
+            <div class="bg-indigo-50 dark:bg-indigo-900/20 p-3 rounded-lg">
+                <p class="text-xs text-indigo-700 dark:text-indigo-300">
+                    <i class="fas fa-lightbulb mr-1"></i>
+                    <strong>Dica:</strong> Use mensagens de áudio para criar uma conexão mais pessoal com seus leads ou para dar instruções importantes.
+                </p>
+            </div>
+        </div>
+    </div>
+<?php
+endif;
 ?>

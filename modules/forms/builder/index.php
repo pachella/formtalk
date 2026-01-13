@@ -294,6 +294,7 @@ require_once __DIR__ . '/builder_sidebar.php';
                             <option value="message">Mensagem</option>
                             <option value="loading">Carregamento</option>
                             <option value="vsl" <?= !PlanService::hasProAccess() ? 'disabled' : '' ?>>VSL (Video Sales Letter) <?= !PlanService::hasProAccess() ? '✨ PRO' : '' ?></option>
+                            <option value="audio_message" <?= !PlanService::hasProAccess() ? 'disabled' : '' ?>>Mensagem de Áudio <?= !PlanService::hasProAccess() ? '✨ PRO' : '' ?></option>
                             <option value="name">Nome Completo</option>
                             <option value="text">Texto Curto</option>
                             <option value="textarea">Texto Longo</option>

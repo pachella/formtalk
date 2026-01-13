@@ -311,6 +311,54 @@ if ($field['type'] === 'vsl'):
 <?php endif; ?>
 
 <?php
+// AUDIO_MESSAGE (Mensagem de Áudio)
+if ($field['type'] === 'audio_message'):
+    $field_rendered = true;
+    $config = json_decode($field['config'] ?? '{}', true);
+    $audioUrl = $config['audio_url'] ?? '';
+    $waitTime = $config['wait_time'] ?? 0;
+?>
+    <div class="field-item bg-gradient-to-r from-pink-50 to-rose-50 dark:from-pink-900/30 dark:to-rose-900/30 border-l-4 border-pink-500 dark:border-pink-600 p-4 rounded-lg hover:shadow-md transition-shadow" draggable="true" ondragstart="dragStart(event)" ondragover="allowDrop(event)" ondrop="drop(event)" data-field-id="<?= $field['id'] ?>" data-order-index="<?= $field['order_index'] ?>">
+        <div class="flex items-start">
+            <div class="drag-handle mr-3 cursor-move text-gray-400 hover:text-gray-600 dark:text-zinc-500 dark:hover:text-zinc-300">
+                <i class="fas fa-grip-vertical"></i>
+            </div>
+            <div class="text-pink-600 dark:text-pink-400 mt-1">
+                <i class="fas fa-microphone text-xl"></i>
+            </div>
+            <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1">
+                    <h3 class="font-medium text-pink-900 dark:text-pink-100"><?= htmlspecialchars($field['label']) ?: 'Mensagem de Áudio' ?></h3>
+                    <span class="text-xs px-2 py-0.5 bg-pink-200 dark:bg-pink-800 text-pink-800 dark:text-pink-200 rounded">✨ PRO</span>
+                </div>
+                <?php if (!empty($field['description'])): ?>
+                    <p class="text-sm text-pink-800 dark:text-pink-200 mb-2"><?= htmlspecialchars($field['description']) ?></p>
+                <?php endif; ?>
+                <span class="text-xs text-pink-700 dark:text-pink-300">
+                    Áudio: <?= $audioUrl ? '✓ Configurado' : 'Não configurado' ?>
+                    <?php if ($waitTime > 0): ?>
+                        • Aguardar <?= $waitTime ?>s
+                    <?php endif; ?>
+                </span>
+            </div>
+        </div>
+        <div class="flex gap-2 ml-3">
+            <button onclick="duplicateField(<?= $field['id'] ?>)"
+                    class="text-blue-600 hover:text-blue-800 dark:text-blue-400 dark:hover:text-blue-300"
+                    title="Duplicar">
+                <i class="fas fa-copy"></i>
+            </button>
+            <button onclick="editField(<?= $field['id'] ?>)" style="color: #4EA44B;" class="hover:opacity-80" title="Editar">
+                <i class="fas fa-edit"></i>
+            </button>
+            <button onclick="deleteField(<?= $field['id'] ?>)" class="text-red-600 hover:text-red-800 dark:text-red-400 dark:hover:text-red-300" title="Excluir">
+                <i class="fas fa-trash"></i>
+            </button>
+        </div>
+    </div>
+<?php endif; ?>
+
+<?php
 // LOADING (Carregamento)
 if ($field['type'] === 'loading'):
     $field_rendered = true;

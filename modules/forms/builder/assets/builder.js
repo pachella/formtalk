@@ -997,6 +997,29 @@ async function editField(fieldId) {
                     }, 50);
                 }
 
+                // Audio Message
+                if (field.type === 'audio_message' && Object.keys(config).length > 0) {
+                    setTimeout(() => {
+                        const audioUrl = document.getElementById('audioUrl');
+                        const audioWaitTime = document.getElementById('audioWaitTime');
+                        const audioButtonText = document.getElementById('audioButtonText');
+
+                        if(audioUrl) audioUrl.value = config.audio_url || '';
+                        if(audioWaitTime) audioWaitTime.value = config.wait_time || 0;
+                        if(audioButtonText) audioButtonText.value = config.button_text || 'Continuar';
+
+                        // Se houver URL de áudio, mostrar preview
+                        if(config.audio_url) {
+                            const audioPreview = document.getElementById('audioPreview');
+                            const audioFileName = document.getElementById('audioFileName');
+                            if(audioPreview && audioFileName) {
+                                audioPreview.classList.remove('hidden');
+                                audioFileName.textContent = config.audio_url.split('/').pop();
+                            }
+                        }
+                    }, 50);
+                }
+
                 // Loading
                 if (field.type === 'loading' && Object.keys(config).length > 0) {
                     setTimeout(() => {
@@ -2656,3 +2679,127 @@ function showProFeature() {
         }
     });
 }
+
+// ==================== AUDIO MESSAGE ====================
+
+// Upload de áudio
+function setupAudioUpload() {
+    const audioFileInput = document.getElementById('audioFile');
+    if (!audioFileInput) return;
+
+    audioFileInput.addEventListener('change', async function(e) {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        // Validar tipo de arquivo
+        const allowedTypes = ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/mp4', 'audio/m4a'];
+        if (!allowedTypes.includes(file.type) && !file.name.match(/\.(mp3|wav|ogg|m4a)$/i)) {
+            Swal.fire({
+                title: 'Erro!',
+                text: 'Formato de áudio não suportado. Use MP3, WAV, OGG ou M4A.',
+                icon: 'error'
+            });
+            e.target.value = '';
+            return;
+        }
+
+        // Validar tamanho (50MB)
+        const maxSize = 50 * 1024 * 1024; // 50MB
+        if (file.size > maxSize) {
+            Swal.fire({
+                title: 'Erro!',
+                text: 'O arquivo é muito grande. Tamanho máximo: 50MB.',
+                icon: 'error'
+            });
+            e.target.value = '';
+            return;
+        }
+
+        // Mostrar loading
+        Swal.fire({
+            title: 'Fazendo upload...',
+            html: 'Aguarde enquanto o áudio é enviado.',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        // Fazer upload via FormData
+        const formData = new FormData();
+        formData.append('audio', file);
+
+        try {
+            const response = await fetch('upload_audio.php', {
+                method: 'POST',
+                body: formData
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                // Atualizar campo hidden com URL
+                const audioUrlInput = document.getElementById('audioUrl');
+                if (audioUrlInput) {
+                    audioUrlInput.value = result.url;
+                }
+
+                // Mostrar preview
+                const audioPreview = document.getElementById('audioPreview');
+                const audioFileName = document.getElementById('audioFileName');
+                if (audioPreview && audioFileName) {
+                    audioPreview.classList.remove('hidden');
+                    audioFileName.textContent = file.name;
+                }
+
+                Swal.fire({
+                    title: 'Sucesso!',
+                    text: 'Áudio enviado com sucesso!',
+                    icon: 'success',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            } else {
+                throw new Error(result.error || 'Erro ao fazer upload');
+            }
+        } catch (error) {
+            console.error('Erro no upload:', error);
+            Swal.fire({
+                title: 'Erro!',
+                text: error.message || 'Erro ao fazer upload do áudio.',
+                icon: 'error'
+            });
+            e.target.value = '';
+        }
+    });
+}
+
+// Remover áudio
+function removeAudio() {
+    const audioFileInput = document.getElementById('audioFile');
+    const audioUrlInput = document.getElementById('audioUrl');
+    const audioPreview = document.getElementById('audioPreview');
+
+    if (audioFileInput) audioFileInput.value = '';
+    if (audioUrlInput) audioUrlInput.value = '';
+    if (audioPreview) audioPreview.classList.add('hidden');
+
+    console.log('Áudio removido');
+}
+
+// Inicializar upload quando o modal abrir
+document.addEventListener('DOMContentLoaded', function() {
+    // Observar quando o modal é aberto
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.addedNodes.length) {
+                setupAudioUpload();
+            }
+        });
+    });
+
+    const modalContainer = document.getElementById('fieldModal');
+    if (modalContainer) {
+        observer.observe(modalContainer, { childList: true, subtree: true });
+    }
+});

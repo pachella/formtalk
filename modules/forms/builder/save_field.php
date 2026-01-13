@@ -102,6 +102,13 @@ try {
         $config['hide_controls'] = isset($_POST['vsl_hide_controls']) ? 1 : 0;
     }
 
+    // Audio Message config
+    if ($type === 'audio_message') {
+        $config['audio_url'] = trim($_POST['audio_url'] ?? '');
+        $config['wait_time'] = intval($_POST['audio_wait_time'] ?? 0);
+        $config['button_text'] = trim($_POST['audio_button_text'] ?? 'Continuar');
+    }
+
     // Loading config
     if ($type === 'loading') {
         $config['phrase_1'] = trim($_POST['loading_phrase_1'] ?? 'Analisando suas respostas...');
