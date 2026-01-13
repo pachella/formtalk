@@ -128,7 +128,7 @@ function loadFieldConfig(fieldType) {
 
                 // Esconder botão de mídia para VSL e Loading (pois usam configurações próprias)
                 const mediaBtn = document.getElementById('mediaBtn');
-                if (['vsl', 'loading'].includes(fieldType) && mediaBtn) {
+                if (['vsl', 'loading', 'audio_message'].includes(fieldType) && mediaBtn) {
                     mediaBtn.style.display = 'none';
                 } else if (mediaBtn) {
                     mediaBtn.style.display = 'block';
@@ -188,6 +188,14 @@ function loadFieldConfig(fieldType) {
                     case 'loading':
                         const loadingConfig = document.getElementById('loadingConfig');
                         if(loadingConfig) loadingConfig.style.display = 'block';
+                        break;
+                    case 'audio_message':
+                        const audioMessageConfig = document.getElementById('audioMessageConfig');
+                        if(audioMessageConfig) {
+                            audioMessageConfig.style.display = 'block';
+                            // Inicializar o upload de áudio
+                            setupAudioUpload();
+                        }
                         break;
                 }
             }
