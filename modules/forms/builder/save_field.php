@@ -137,7 +137,7 @@ try {
         exit();
     }
 
-    $allowedTypes = ['text', 'textarea', 'email', 'phone', 'date', 'cpf', 'cnpj', 'rg', 'money', 'slider', 'rating', 'address', 'file', 'terms', 'radio', 'select', 'name', 'message', 'welcome', 'url', 'number', 'range', 'image_choice', 'vsl', 'loading'];
+    $allowedTypes = ['text', 'textarea', 'email', 'phone', 'date', 'cpf', 'cnpj', 'rg', 'money', 'slider', 'rating', 'address', 'file', 'terms', 'radio', 'select', 'name', 'message', 'welcome', 'url', 'number', 'range', 'image_choice', 'vsl', 'loading', 'audio_message'];
     if (!in_array($type, $allowedTypes)) {
         http_response_code(400);
         echo "Tipo de campo inválido";
