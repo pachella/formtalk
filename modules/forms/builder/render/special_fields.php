@@ -317,27 +317,31 @@ if ($field['type'] === 'audio_message'):
     $config = json_decode($field['config'] ?? '{}', true);
     $audioUrl = $config['audio_url'] ?? '';
     $waitTime = $config['wait_time'] ?? 0;
+    $autoplay = $config['autoplay'] ?? 0;
 ?>
-    <div class="field-item bg-pink-50 dark:bg-pink-900/20 border border-pink-200 dark:border-pink-800 rounded-lg p-4 cursor-move hover:shadow-md transition-shadow" data-field-id="<?= $field['id'] ?>">
+    <div class="field-item bg-purple-50 dark:bg-purple-900/20 border border-purple-200 dark:border-purple-800 rounded-lg p-4 cursor-move hover:shadow-md transition-shadow" data-field-id="<?= $field['id'] ?>">
         <div class="flex items-start justify-between">
             <div class="flex items-start gap-3 flex-1">
                 <div class="text-gray-400 dark:text-zinc-500 mt-1">
                     <i class="fas fa-grip-vertical"></i>
                 </div>
-                <div class="text-pink-600 dark:text-pink-400 mt-1">
+                <div class="text-purple-600 dark:text-purple-400 mt-1">
                     <i class="fas fa-microphone text-xl"></i>
                 </div>
                 <div class="flex-1 min-w-0">
                     <div class="flex items-center gap-2 mb-1">
-                        <h3 class="font-medium text-pink-900 dark:text-pink-100"><?= htmlspecialchars($field['label']) ?: 'Mensagem de Áudio' ?></h3>
+                        <h3 class="font-medium text-purple-900 dark:text-purple-100"><?= htmlspecialchars($field['label']) ?: 'Mensagem de Áudio' ?></h3>
                     </div>
                     <?php if (!empty($field['description'])): ?>
-                        <p class="text-sm text-pink-800 dark:text-pink-200 mb-2"><?= htmlspecialchars($field['description']) ?></p>
+                        <p class="text-sm text-purple-800 dark:text-purple-200 mb-2"><?= htmlspecialchars($field['description']) ?></p>
                     <?php endif; ?>
-                    <span class="text-xs text-pink-700 dark:text-pink-300">
+                    <span class="text-xs text-purple-700 dark:text-purple-300">
                         Áudio: <?= $audioUrl ? '✓ Configurado' : 'Não configurado' ?>
                         <?php if ($waitTime > 0): ?>
                             • Aguardar <?= $waitTime ?>s
+                        <?php endif; ?>
+                        <?php if ($autoplay): ?>
+                            • Autoplay ativado
                         <?php endif; ?>
                     </span>
                 </div>

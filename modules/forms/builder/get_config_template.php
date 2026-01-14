@@ -435,6 +435,17 @@ if ($type === 'audio_message'):
                 </p>
             </div>
 
+            <div class="flex items-center gap-2 p-3 bg-purple-50 dark:bg-purple-900/20 rounded-lg">
+                <input type="checkbox"
+                       name="audio_autoplay"
+                       id="audioAutoplay"
+                       class="w-4 h-4 text-purple-600 border-gray-300 rounded focus:ring-purple-500">
+                <label for="audioAutoplay" class="text-sm text-purple-700 dark:text-purple-300 cursor-pointer">
+                    <i class="fas fa-play-circle mr-1"></i>
+                    <strong>Reprodução Automática</strong> - Iniciar áudio automaticamente quando usuário chegar nesta etapa
+                </label>
+            </div>
+
             <div class="bg-indigo-50 dark:bg-indigo-900/20 p-3 rounded-lg">
                 <p class="text-xs text-indigo-700 dark:text-indigo-300">
                     <i class="fas fa-lightbulb mr-1"></i>

@@ -107,6 +107,7 @@ try {
         $config['audio_url'] = trim($_POST['audio_url'] ?? '');
         $config['wait_time'] = intval($_POST['audio_wait_time'] ?? 0);
         $config['button_text'] = trim($_POST['audio_button_text'] ?? 'Continuar');
+        $config['autoplay'] = isset($_POST['audio_autoplay']) ? 1 : 0;
     }
 
     // Loading config

@@ -42,7 +42,7 @@ $formId = intval($_POST['form_id']);
 $fieldName = $_POST['field_name'];
 
 // Validar field_name
-$allowedFields = ['background_image', 'logo', 'media_image', 'image_choice'];
+$allowedFields = ['background_image', 'logo', 'media_image', 'image_choice', 'audio_message'];
 if (!in_array($fieldName, $allowedFields)) {
     http_response_code(400);
     echo json_encode(['success' => false, 'error' => 'Campo inválido']);
@@ -57,7 +57,64 @@ if (!$permissionManager->canEditForm($pdo, $formId)) {
     exit;
 }
 
-// Validar arquivo
+// Se for áudio, processar de forma diferente
+if ($fieldName === 'audio_message') {
+    // Validar arquivo de áudio
+    $allowedMimeTypes = ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/mp4', 'audio/x-m4a'];
+    $allowedExtensions = ['mp3', 'wav', 'ogg', 'm4a'];
+
+    $fileExtension = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION));
+
+    if (!in_array($fileExtension, $allowedExtensions)) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'error' => 'Formato de áudio não suportado. Use MP3, WAV, OGG ou M4A.']);
+        exit;
+    }
+
+    if ($file['size'] > 50 * 1024 * 1024) {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'error' => 'Arquivo muito grande. Máximo: 50MB']);
+        exit;
+    }
+
+    try {
+        // Criar diretório se não existir
+        $uploadDir = __DIR__ . '/../../../uploads/forms/' . $formId . '/';
+        if (!is_dir($uploadDir)) {
+            mkdir($uploadDir, 0755, true);
+        }
+
+        // Gerar nome único para o arquivo
+        $originalFilename = pathinfo($file['name'], PATHINFO_FILENAME);
+        $safeFilename = preg_replace('/[^a-zA-Z0-9-_]/', '_', $originalFilename);
+        $filename = $fieldName . '-' . $safeFilename . '-' . time() . '.' . $fileExtension;
+        $filepath = $uploadDir . $filename;
+
+        // Mover arquivo
+        if (move_uploaded_file($file['tmp_name'], $filepath)) {
+            $publicUrl = '/uploads/forms/' . $formId . '/' . $filename;
+
+            http_response_code(200);
+            echo json_encode([
+                'success' => true,
+                'url' => $publicUrl,
+                'filename' => $filename
+            ]);
+        } else {
+            throw new Exception('Erro ao mover arquivo de áudio');
+        }
+    } catch (Exception $e) {
+        error_log('Erro no upload de áudio: ' . $e->getMessage());
+        http_response_code(500);
+        echo json_encode([
+            'success' => false,
+            'error' => 'Erro ao processar áudio: ' . $e->getMessage()
+        ]);
+    }
+    exit;
+}
+
+// Validar arquivo (imagem)
 $validation = ImageProcessor::validateUpload($file);
 if (!$validation['success']) {
     http_response_code(400);

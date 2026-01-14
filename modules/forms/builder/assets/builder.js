@@ -126,7 +126,7 @@ function loadFieldConfig(fieldType) {
             if (template.trim() !== '') {
                 dynamicConfigContainer.innerHTML = template;
 
-                // Esconder botão de mídia para VSL e Loading (pois usam configurações próprias)
+                // Esconder botão de mídia para VSL, Loading e Audio Message (pois usam configurações próprias)
                 const mediaBtn = document.getElementById('mediaBtn');
                 if (['vsl', 'loading', 'audio_message'].includes(fieldType) && mediaBtn) {
                     mediaBtn.style.display = 'none';
@@ -193,7 +193,6 @@ function loadFieldConfig(fieldType) {
                         const audioMessageConfig = document.getElementById('audioMessageConfig');
                         if(audioMessageConfig) {
                             audioMessageConfig.style.display = 'block';
-                            // Inicializar o upload de áudio
                             setupAudioUpload();
                         }
                         break;
@@ -1011,10 +1010,12 @@ async function editField(fieldId) {
                         const audioUrl = document.getElementById('audioUrl');
                         const audioWaitTime = document.getElementById('audioWaitTime');
                         const audioButtonText = document.getElementById('audioButtonText');
+                        const audioAutoplay = document.getElementById('audioAutoplay');
 
                         if(audioUrl) audioUrl.value = config.audio_url || '';
                         if(audioWaitTime) audioWaitTime.value = config.wait_time || 0;
                         if(audioButtonText) audioButtonText.value = config.button_text || 'Continuar';
+                        if(audioAutoplay) audioAutoplay.checked = config.autoplay == 1;
 
                         // Se houver URL de áudio, mostrar preview
                         if(config.audio_url) {
@@ -2690,18 +2691,24 @@ function showProFeature() {
 
 // ==================== AUDIO MESSAGE ====================
 
-// Upload de áudio
+// Upload de áudio usando o mesmo sistema do image_choice
 function setupAudioUpload() {
     const audioFileInput = document.getElementById('audioFile');
     if (!audioFileInput) return;
 
-    audioFileInput.addEventListener('change', async function(e) {
+    // Remover event listeners antigos
+    const newInput = audioFileInput.cloneNode(true);
+    audioFileInput.parentNode.replaceChild(newInput, audioFileInput);
+
+    newInput.addEventListener('change', async function(e) {
         const file = e.target.files[0];
         if (!file) return;
 
         // Validar tipo de arquivo
-        const allowedTypes = ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/mp4', 'audio/m4a'];
-        if (!allowedTypes.includes(file.type) && !file.name.match(/\.(mp3|wav|ogg|m4a)$/i)) {
+        const allowedTypes = ['audio/mpeg', 'audio/wav', 'audio/ogg', 'audio/mp4', 'audio/x-m4a'];
+        const allowedExtensions = /\.(mp3|wav|ogg|m4a)$/i;
+
+        if (!allowedTypes.includes(file.type) && !file.name.match(allowedExtensions)) {
             Swal.fire({
                 title: 'Erro!',
                 text: 'Formato de áudio não suportado. Use MP3, WAV, OGG ou M4A.',
@@ -2712,7 +2719,7 @@ function setupAudioUpload() {
         }
 
         // Validar tamanho (50MB)
-        const maxSize = 50 * 1024 * 1024; // 50MB
+        const maxSize = 50 * 1024 * 1024;
         if (file.size > maxSize) {
             Swal.fire({
                 title: 'Erro!',
@@ -2733,20 +2740,25 @@ function setupAudioUpload() {
             }
         });
 
-        // Fazer upload via FormData
+        // Fazer upload via FormData usando o mesmo endpoint do image_choice
         const formData = new FormData();
-        formData.append('audio', file);
+        formData.append('image', file);  // Usar 'image' pois o PHP espera $_FILES['image']
+        formData.append('form_id', FORM_ID);
+        formData.append('field_name', 'audio_message');
 
         try {
-            // Adicionar timestamp para evitar cache
-            const timestamp = new Date().getTime();
-            const response = await fetch('/modules/forms/builder/upload_audio.php?t=' + timestamp, {
+            const res = await fetch('/modules/forms/customization/upload_image.php', {
                 method: 'POST',
-                body: formData,
-                cache: 'no-store'
+                body: formData
             });
 
-            const result = await response.json();
+            if (!res.ok) {
+                const text = await res.text();
+                console.error('Resposta do servidor:', text);
+                throw new Error(`Erro no servidor (${res.status}): ${text || 'Resposta vazia'}`);
+            }
+
+            const result = await res.json();
 
             if (result.success) {
                 // Atualizar campo hidden com URL
@@ -2797,20 +2809,3 @@ function removeAudio() {
 
     console.log('Áudio removido');
 }
-
-// Inicializar upload quando o modal abrir
-document.addEventListener('DOMContentLoaded', function() {
-    // Observar quando o modal é aberto
-    const observer = new MutationObserver(function(mutations) {
-        mutations.forEach(function(mutation) {
-            if (mutation.addedNodes.length) {
-                setupAudioUpload();
-            }
-        });
-    });
-
-    const modalContainer = document.getElementById('fieldModal');
-    if (modalContainer) {
-        observer.observe(modalContainer, { childList: true, subtree: true });
-    }
-});

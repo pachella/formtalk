@@ -14,6 +14,7 @@
  * - 12.3: Correções completas no VSL - Autoplay via API + Bloqueio robusto + Esconder controles
  * - 12.4: Novo campo Mensagem de Áudio com player customizado
  * - 12.5: Sistema anti-cache melhorado + Fix upload de áudio
+ * - 12.6: Campo Mensagem de Áudio recriado do zero + Autoplay + Upload via upload_image.php
  */
 
-define('APP_VERSION', '12.5');
+define('APP_VERSION', '12.6');
