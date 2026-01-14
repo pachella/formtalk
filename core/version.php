@@ -15,6 +15,7 @@
  * - 12.4: Novo campo Mensagem de Áudio com player customizado
  * - 12.5: Sistema anti-cache melhorado + Fix upload de áudio
  * - 12.6: Campo Mensagem de Áudio recriado do zero + Autoplay + Upload via upload_image.php
+ * - 13.0: Redesign modal de personalização + Sistema de alinhamento de conteúdo (left/center/right)
  */
 
-define('APP_VERSION', '12.6');
+define('APP_VERSION', '13.0');
