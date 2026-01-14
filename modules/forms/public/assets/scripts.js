@@ -913,7 +913,11 @@ if (document.getElementById('formOneByOne')) {
                 body: formData
             });
 
+            console.log('📡 Resposta recebida, status:', res.status);
+
             const resultText = await res.text();
+            console.log('📄 Texto da resposta:', resultText.substring(0, 200));
+
             let result, score = null;
 
             // Tentar parsear como JSON, senão usar como string (backward compatibility)
@@ -922,13 +926,25 @@ if (document.getElementById('formOneByOne')) {
                 score = result.score !== undefined ? result.score : null;
             } catch (e) {
                 result = resultText;
+                console.log('⚠️ Resposta não é JSON, usando como texto');
             }
 
             const isSuccess = (result && result.success === true) || result === 'success';
 
-            console.log('📊 Resposta do servidor (one-by-one):', { result, score });
+            console.log('📊 Resultado processado:', { isSuccess, result, score });
 
             if (res.ok && isSuccess) {
+                console.log('✅ Formulário enviado com sucesso!');
+
+                // Limpar segmentos do progress bar
+                const segments = document.querySelectorAll('.progress-segment');
+                if (segments.length > 0) {
+                    segments.forEach(segment => {
+                        segment.style.width = '100%';
+                        segment.classList.remove('current');
+                    });
+                }
+
                 slides.forEach(slide => slide.style.display = 'none');
 
                 // Usar a função para gerar mensagem com redirecionamento
@@ -937,13 +953,20 @@ if (document.getElementById('formOneByOne')) {
                 // Inicializar animação Lottie se existir
                 setTimeout(() => initLottieSuccess(), 100);
 
-                document.getElementById('progressBar').style.width = '100%';
+                // Barra linear (compatibilidade)
+                const progressBar = document.getElementById('progressBar');
+                if (progressBar) {
+                    progressBar.style.width = '100%';
+                }
             } else {
+                console.error('❌ Erro no envio:', result);
                 alert('Erro ao enviar: ' + (result.message || resultText));
                 submitBtn.disabled = false;
                 submitBtn.innerHTML = 'Enviar <i class="fas fa-paper-plane text-sm ml-2"></i>';
             }
         } catch (error) {
+            console.error('❌ Erro crítico no envio:', error);
+            console.error('❌ Stack:', error.stack);
             alert('Erro de conexão. Tente novamente.');
             submitBtn.disabled = false;
             submitBtn.innerHTML = 'Enviar <i class="fas fa-paper-plane text-sm ml-2"></i>';
