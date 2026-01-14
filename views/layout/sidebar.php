@@ -82,7 +82,7 @@ if ($permissionManager->isAdmin()) {
 <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden hidden" onclick="closeSidebar()"></div>
 
 <!-- Sidebar -->
-<aside id="sidebar" class="fixed lg:static inset-y-0 left-0 transform -translate-x-full lg:translate-x-0 w-64 bg-white dark:bg-zinc-800 shadow-lg min-h-screen transition-transform duration-300 ease-in-out z-50">
+<aside id="sidebar" class="fixed lg:static inset-y-0 left-0 transform -translate-x-full lg:translate-x-0 w-64 bg-white dark:bg-zinc-800 shadow-lg min-h-screen transition-transform duration-300 ease-in-out z-50 flex flex-col">
   <!-- Header da sidebar (mobile) -->
   <div class="lg:hidden flex items-center justify-between p-4 border-b border-gray-200 dark:border-zinc-700">
     <h2 class="text-lg font-bold text-gray-800 dark:text-gray-200">Menu</h2>
@@ -109,7 +109,7 @@ if ($permissionManager->isAdmin()) {
     <?php endif; ?>
   </div>
 
-  <nav class="p-4 overflow-y-auto" style="max-height: calc(100vh - 180px);">
+  <nav class="flex-1 p-4 overflow-y-auto">
     <ul class="space-y-2">
       
       <?php foreach ($moduleStructure as $config): ?>
@@ -132,7 +132,7 @@ if ($permissionManager->isAdmin()) {
   </nav>
   
   <!-- Perfil do usuário -->
-  <div class="absolute bottom-0 w-64 p-4 border-t border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 transition-colors duration-200">
+  <div class="p-4 border-t border-gray-200 dark:border-zinc-700 bg-white dark:bg-zinc-800 transition-colors duration-200">
     <div class="flex items-center space-x-3">
       <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold" style="background-color: #4EA44B;">
         <?= strtoupper(substr($_SESSION["user_name"] ?? 'U', 0, 1)) ?>

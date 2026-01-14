@@ -149,13 +149,20 @@ $vslId = 'vsl-' . $field['id'];
 
         console.log('✅ Botão encontrado:', button);
 
-        // Desabilitar botão inicialmente
+        // Encontrar o texto de hint "pressione Enter"
+        const hintText = slide.querySelector('.text-xs.text-gray-400');
+
+        // Desabilitar botão inicialmente (sem alterar texto)
         button.disabled = true;
         button.classList.add('opacity-50', 'cursor-not-allowed');
         button.setAttribute('data-vsl-blocked', 'true');
 
-        // Salvar o HTML original do botão
-        const originalButtonHTML = button.innerHTML;
+        const originalHintText = hintText ? hintText.textContent : '';
+
+        // Alterar texto do hint
+        if (hintText) {
+            hintText.textContent = 'Aguarde para continuar...';
+        }
 
         // Bloquear tecla Enter no slide inteiro
         const enterBlocker = function(e) {
@@ -172,41 +179,26 @@ $vslId = 'vsl-' . $field['id'];
         document.addEventListener('keydown', enterBlocker, true);
         slide.addEventListener('keydown', enterBlocker, true);
 
-        let timeLeft = waitTime;
+        console.log('⏱️ Timer iniciado:', waitTime, 'segundos (sem exibir cronômetro)');
 
-        // Atualizar texto do botão
-        function updateButtonText() {
-            button.innerHTML = 'Aguarde <span class="font-bold">' + timeLeft + 's</span>';
-        }
+        // Aguardar o tempo configurado
+        setTimeout(function() {
+            // Habilitar botão
+            button.disabled = false;
+            button.classList.remove('opacity-50', 'cursor-not-allowed');
+            button.removeAttribute('data-vsl-blocked');
 
-        updateButtonText();
-        console.log('⏱️ Contador iniciado:', timeLeft, 'segundos');
-
-        // Contador regressivo
-        const countdown = setInterval(function() {
-            timeLeft--;
-            console.log('⏱️ Timer:', timeLeft + 's restantes');
-
-            if (timeLeft > 0) {
-                updateButtonText();
-            } else {
-                clearInterval(countdown);
-
-                // Habilitar botão
-                button.disabled = false;
-                button.classList.remove('opacity-50', 'cursor-not-allowed');
-                button.removeAttribute('data-vsl-blocked');
-
-                // Restaurar texto do botão
-                button.innerHTML = buttonText;
-
-                // Remover bloqueios de Enter
-                document.removeEventListener('keydown', enterBlocker, true);
-                slide.removeEventListener('keydown', enterBlocker, true);
-
-                console.log('✅ VSL liberado! Botão habilitado');
+            // Restaurar texto do hint
+            if (hintText) {
+                hintText.textContent = originalHintText;
             }
-        }, 1000);
+
+            // Remover bloqueios de Enter
+            document.removeEventListener('keydown', enterBlocker, true);
+            slide.removeEventListener('keydown', enterBlocker, true);
+
+            console.log('✅ VSL liberado! Botão habilitado');
+        }, waitTime * 1000);
     }
 
     // Função para inicializar quando o slide ficar visível

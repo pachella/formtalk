@@ -1283,6 +1283,33 @@ function copyFormLink() {
     document.getElementById('shareDropdown').classList.add('hidden');
 }
 
+// Baixar QR Code do formulário
+function downloadQRCode() {
+    const formUrl = document.getElementById('formUrl').value;
+
+    // Gerar QR Code usando API pública
+    const qrSize = 500; // Tamanho da imagem
+    const qrApiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=${qrSize}x${qrSize}&data=${encodeURIComponent(formUrl)}`;
+
+    // Criar elemento temporário para baixar
+    const link = document.createElement('a');
+    link.href = qrApiUrl;
+    link.download = `qrcode-formulario-${FORM_ID}.png`;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    Swal.fire({
+        title: 'QR Code gerado!',
+        text: 'O download do QR Code será iniciado automaticamente',
+        icon: 'success',
+        timer: 1500,
+        showConfirmButton: false
+    });
+
+    document.getElementById('shareDropdown').classList.add('hidden');
+}
+
 // Mostrar modal de incorporação
 function showEmbedModal() {
     const formUrl = document.getElementById('formUrl').value;
