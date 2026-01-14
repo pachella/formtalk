@@ -579,6 +579,8 @@ function updateProgress() {
 
     // Atualizar segmentos estilo Stories
     const segments = document.querySelectorAll('.progress-segment');
+    console.log('📊 Stories - Segments found:', segments.length, '| Current slide:', currentSlide);
+
     if (segments.length > 0) {
         segments.forEach((segment, index) => {
             const segmentIndex = parseInt(segment.getAttribute('data-segment-index'));
@@ -587,16 +589,21 @@ function updateProgress() {
                 // Etapas concluídas: 100% preenchido
                 segment.style.width = '100%';
                 segment.classList.remove('current');
+                console.log(`✅ Segment ${segmentIndex}: Completed (width: 100%)`);
             } else if (segmentIndex === currentSlide) {
                 // Etapa atual: 100% preenchido + animação de piscada
                 segment.style.width = '100%';
                 segment.classList.add('current');
+                console.log(`⚡ Segment ${segmentIndex}: Current (blinking animation enabled)`);
             } else {
                 // Etapas futuras: 0%
                 segment.style.width = '0%';
                 segment.classList.remove('current');
+                console.log(`⏳ Segment ${segmentIndex}: Future (width: 0%)`);
             }
         });
+    } else {
+        console.warn('⚠️ No .progress-segment elements found!');
     }
 }
 

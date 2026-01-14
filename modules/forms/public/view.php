@@ -478,6 +478,12 @@ $fontFamilyUrl = str_replace(' ', '+', $customization['font_family']);
             background-color: var(--primary-color) !important;
         }
 
+        /* Segmentos da barra de progresso estilo Stories */
+        .progress-segment {
+            transition: width 0.3s ease-out, opacity 0.3s ease-out;
+            will-change: width, opacity;
+        }
+
         /* Animação de piscada para o segmento atual */
         .progress-segment.current {
             animation: storiesPulse 1.5s ease-in-out infinite;
