@@ -2740,7 +2740,7 @@ function setupAudioUpload() {
         try {
             // Adicionar timestamp para evitar cache
             const timestamp = new Date().getTime();
-            const response = await fetch('upload_audio.php?t=' + timestamp, {
+            const response = await fetch('/modules/forms/builder/upload_audio.php?t=' + timestamp, {
                 method: 'POST',
                 body: formData,
                 cache: 'no-store'
