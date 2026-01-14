@@ -1435,13 +1435,13 @@ function showCustomizationModal(formId, data) {
                 <!-- Coluna Direita: Preview -->
                 <div>
                     <h3 class="font-semibold text-sm ${isDark ? 'text-zinc-100' : 'text-gray-900'} border-b ${isDark ? 'border-zinc-700' : 'border-gray-200'} pb-2 mb-3">Preview</h3>
-                    <div id="customizationPreview" class="border-2 border-dashed ${isDark ? 'border-zinc-600' : 'border-gray-300'} rounded-md p-6 min-h-[450px] flex flex-col items-center justify-center" 
+                    <div id="customizationPreview" class="border-2 border-dashed ${isDark ? 'border-zinc-600' : 'border-gray-300'} rounded-md p-6 min-h-[450px] flex flex-col items-center justify-center"
                          style="background-color: ${data.background_color || '#ffffff'}; ${data.background_image ? `background-image: url('${data.background_image}'); background-size: cover; background-position: center;` : ''}">
                         ${data.logo ? `<img src="${data.logo}" alt="Logo" class="max-w-[150px] h-auto mb-6" id="previewLogo">` : '<div id="previewLogo"></div>'}
-                        <div class="text-center max-w-md">
+                        <div id="previewContent" class="max-w-md ${(data.content_alignment || 'center') === 'left' ? 'mr-auto text-left' : (data.content_alignment || 'center') === 'right' ? 'ml-auto text-right' : 'mx-auto text-center'}">
                             <h4 class="text-2xl font-bold mb-3" id="previewTitle" style="color: ${data.text_color || '#000000'}; font-family: ${data.font_family || 'Inter'}">Título do Formulário</h4>
                             <p class="text-sm mb-6 opacity-90" id="previewText" style="color: ${data.text_color || '#000000'}; font-family: ${data.font_family || 'Inter'}">Esta é uma prévia de como seu formulário ficará.</p>
-                            <button type="button" id="previewButton" class="px-8 py-3 font-medium text-sm transition-colors" 
+                            <button type="button" id="previewButton" class="px-8 py-3 font-medium text-sm transition-colors"
                                     style="background-color: ${data.primary_color || '#4f46e5'}; color: ${data.button_text_color || '#ffffff'}; border-radius: ${data.button_radius || 8}px">
                                 Começar
                             </button>
@@ -1687,15 +1687,17 @@ window.updatePreview = function() {
     const logoUrl = document.getElementById('logoUrl')?.value;
     const buttonRadius = document.getElementById('buttonRadius')?.value;
     const fontFamily = document.getElementById('fontFamily')?.value;
-    
+    const alignment = document.getElementById('contentAlignment')?.value || 'center';
+
     const preview = document.getElementById('customizationPreview');
     const previewTitle = document.getElementById('previewTitle');
     const previewText = document.getElementById('previewText');
     const previewButton = document.getElementById('previewButton');
     const previewLogo = document.getElementById('previewLogo');
-    
+    const previewContent = document.getElementById('previewContent');
+
     if (!preview) return;
-    
+
     if (bgColor) preview.style.backgroundColor = bgColor;
     if (bgImageUrl) {
         preview.style.backgroundImage = `url('${bgImageUrl}')`;
@@ -1704,7 +1706,7 @@ window.updatePreview = function() {
     } else {
         preview.style.backgroundImage = 'none';
     }
-    
+
     if (previewLogo) {
         if (logoUrl) {
             previewLogo.innerHTML = `<img src="${logoUrl}" alt="Logo" class="max-w-[150px] h-auto mb-6">`;
@@ -1712,7 +1714,7 @@ window.updatePreview = function() {
             previewLogo.innerHTML = '';
         }
     }
-    
+
     if (previewTitle && textColor && fontFamily) {
         previewTitle.style.color = textColor;
         previewTitle.style.fontFamily = fontFamily;
@@ -1721,11 +1723,26 @@ window.updatePreview = function() {
         previewText.style.color = textColor;
         previewText.style.fontFamily = fontFamily;
     }
-    
+
     if (previewButton) {
         if (primaryColor) previewButton.style.backgroundColor = primaryColor;
         if (buttonTextColor) previewButton.style.color = buttonTextColor;
         if (buttonRadius) previewButton.style.borderRadius = buttonRadius + 'px';
+    }
+
+    // Aplicar alinhamento
+    if (previewContent) {
+        // Remover classes antigas
+        previewContent.classList.remove('mr-auto', 'ml-auto', 'mx-auto', 'text-left', 'text-right', 'text-center');
+
+        // Adicionar novas classes baseado no alinhamento
+        if (alignment === 'left') {
+            previewContent.classList.add('mr-auto', 'text-left');
+        } else if (alignment === 'right') {
+            previewContent.classList.add('ml-auto', 'text-right');
+        } else {
+            previewContent.classList.add('mx-auto', 'text-center');
+        }
     }
 };
 </script>
