@@ -11,7 +11,7 @@ $audioId = 'audio-' . $field['id'];
 ?>
 
 <?php if (!empty($audioUrl)): ?>
-    <div class="audio-message-container mb-6 max-w-2xl mx-auto"
+    <div class="audio-message-container mb-6"
          data-audio-id="<?= $audioId ?>"
          data-audio-wait="<?= $waitTime ?>"
          data-audio-autoplay="<?= $autoplay ?>">
@@ -75,13 +75,11 @@ $audioId = 'audio-' . $field['id'];
     height: 6px;
     transition: all 0.15s ease;
     opacity: 0.3;
-    box-shadow: 0 0 0px var(--primary-color, #6366f1);
 }
 
 .audio-visualizer-futuristic.playing .bar {
     animation: jarvisWave 1.2s ease-in-out infinite;
     opacity: 1;
-    box-shadow: 0 0 8px var(--primary-color, #6366f1), 0 0 12px var(--primary-color, #6366f1);
 }
 
 .audio-visualizer-futuristic.playing .bar:nth-child(1) { animation-delay: 0s; }
@@ -239,17 +237,16 @@ $audioId = 'audio-' . $field['id'];
 
         console.log('✅ Botão encontrado:', button);
 
-        // Desabilitar botão inicialmente
+        // Desabilitar botão inicialmente (sem alterar texto)
         button.disabled = true;
         button.classList.add('opacity-50', 'cursor-not-allowed');
         button.setAttribute('data-audio-blocked', 'true');
 
-        const originalButtonHTML = button.innerHTML;
         const originalHintText = hintText ? hintText.textContent : '';
 
         // Alterar texto do hint
         if (hintText) {
-            hintText.textContent = 'Aguarde para avançar';
+            hintText.textContent = 'Aguarde para continuar...';
         }
 
         // Bloquear tecla Enter
@@ -266,40 +263,24 @@ $audioId = 'audio-' . $field['id'];
         document.addEventListener('keydown', enterBlocker, true);
         slide.addEventListener('keydown', enterBlocker, true);
 
-        let timeLeft = waitTime;
+        console.log('⏱️ Timer iniciado:', waitTime, 'segundos (sem exibir cronômetro)');
 
-        function updateButtonText() {
-            button.innerHTML = 'Aguarde <span class="font-bold">' + timeLeft + 's</span>';
-        }
+        // Aguardar o tempo configurado
+        setTimeout(function() {
+            button.disabled = false;
+            button.classList.remove('opacity-50', 'cursor-not-allowed');
+            button.removeAttribute('data-audio-blocked');
 
-        updateButtonText();
-        console.log('⏱️ Contador iniciado:', timeLeft, 'segundos');
-
-        const countdown = setInterval(function() {
-            timeLeft--;
-            console.log('⏱️ Timer:', timeLeft + 's restantes');
-
-            if (timeLeft > 0) {
-                updateButtonText();
-            } else {
-                clearInterval(countdown);
-
-                button.disabled = false;
-                button.classList.remove('opacity-50', 'cursor-not-allowed');
-                button.removeAttribute('data-audio-blocked');
-                button.innerHTML = buttonText;
-
-                // Restaurar texto do hint
-                if (hintText) {
-                    hintText.textContent = originalHintText;
-                }
-
-                document.removeEventListener('keydown', enterBlocker, true);
-                slide.removeEventListener('keydown', enterBlocker, true);
-
-                console.log('✅ Áudio liberado! Botão habilitado');
+            // Restaurar texto do hint
+            if (hintText) {
+                hintText.textContent = originalHintText;
             }
-        }, 1000);
+
+            document.removeEventListener('keydown', enterBlocker, true);
+            slide.removeEventListener('keydown', enterBlocker, true);
+
+            console.log('✅ Áudio liberado! Botão habilitado');
+        }, waitTime * 1000);
     }
 
     // Função para autoplay
