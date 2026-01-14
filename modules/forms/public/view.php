@@ -151,6 +151,13 @@ if (!$customization) {
 // Container continua centralizado (mx-auto), mas o conteúdo interno alinha conforme escolha
 $textAlignmentClass = 'text-' . ($customization['content_alignment'] ?? 'center');
 
+// Definir classe de justificação para botões (flex justify)
+$buttonJustifyClass = match($customization['content_alignment'] ?? 'center') {
+    'left' => 'justify-start',
+    'right' => 'justify-end',
+    default => 'justify-center'
+};
+
 // Se o formulário estiver em rascunho, apenas o criador pode visualizar
 if ($form['status'] === 'rascunho') {
     // Verificar se o usuário está logado e é o dono do formulário
@@ -525,14 +532,12 @@ $fontFamilyUrl = str_replace(' ', '+', $customization['font_family']);
 
         /* Fix: Campos de formulário não devem herdar text-alignment do container */
         /* Isso garante que players de áudio, VSL, e outros campos com layouts flex não sejam afetados */
-        input, select, textarea, button,
+        input, select, textarea,
         .audio-message-container,
-        .video-container,
-        [class*="-player"],
-        [class*="-wrapper"],
-        [style*="display: flex"],
-        [style*="display: grid"] {
-            text-align: initial;
+        .audio-player-wrapper,
+        .audio-visualizer-futuristic,
+        .video-container {
+            text-align: initial !important;
         }
 
         /* Estilos para intl-tel-input (seletor de país) */
@@ -748,7 +753,7 @@ $fontFamilyUrl = str_replace(' ', '+', $customization['font_family']);
                                 ?>
                             <?php endif; ?>
 
-                            <div class="flex items-center gap-4 mt-12">
+                            <div class="flex items-center gap-4 mt-12 <?= $buttonJustifyClass ?>">
                                 <?php 
                                 // Definir texto do botão baseado no tipo de campo
                                 $buttonText = 'OK';
@@ -779,12 +784,14 @@ $fontFamilyUrl = str_replace(' ', '+', $customization['font_family']);
                             </div>
 
                             <?php if ($index > 0): ?>
-                                <button type="button"
-                                        onclick="previousQuestion()"
-                                        class="btn-secondary mt-6 flex items-center gap-2"
-                                        style="color: <?= $customization['text_color'] ?>;">
-                                    <i class="fas fa-arrow-up"></i> Voltar
-                                </button>
+                                <div class="flex <?= $buttonJustifyClass ?>">
+                                    <button type="button"
+                                            onclick="previousQuestion()"
+                                            class="btn-secondary mt-6 flex items-center gap-2"
+                                            style="color: <?= $customization['text_color'] ?>;">
+                                        <i class="fas fa-arrow-up"></i> Voltar
+                                    </button>
+                                </div>
                             <?php endif; ?>
 
                         </div>
@@ -895,7 +902,7 @@ $fontFamilyUrl = str_replace(' ', '+', $customization['font_family']);
                             </div>
                         <?php endforeach; ?>
 
-                        <div class="pt-6">
+                        <div class="pt-6 flex <?= $buttonJustifyClass ?>">
                             <button type="submit" class="btn-primary px-6 py-3 text-lg font-medium">
                                 Enviar respostas <i class="fas fa-paper-plane ml-2"></i>
                             </button>

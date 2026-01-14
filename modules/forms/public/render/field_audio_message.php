@@ -137,21 +137,43 @@ $audioId = 'audio-' . $field['id'];
         return;
     }
 
+    console.log('🎵 Player encontrado:', player);
+    console.log('🎵 URL do áudio:', player.src);
+    console.log('🎵 ReadyState:', player.readyState);
+
     let isPlaying = false;
     let currentSpeed = 1;
     const speeds = [1, 1.5, 2];
 
     // Formatar tempo (segundos para MM:SS)
     function formatTime(seconds) {
+        if (!seconds || isNaN(seconds)) return '0:00';
         const mins = Math.floor(seconds / 60);
         const secs = Math.floor(seconds % 60);
         return mins + ':' + (secs < 10 ? '0' : '') + secs;
     }
 
+    // Eventos de debug
+    player.addEventListener('loadstart', function() {
+        console.log('🔄 Iniciando carregamento do áudio...');
+    });
+
+    player.addEventListener('loadeddata', function() {
+        console.log('✅ Dados do áudio carregados');
+    });
+
     // Atualizar duração quando metadados carregarem
     player.addEventListener('loadedmetadata', function() {
-        durationEl.textContent = formatTime(player.duration);
+        console.log('📊 Metadados carregados!');
         console.log('📊 Duração do áudio:', player.duration + 's');
+        durationEl.textContent = formatTime(player.duration);
+    });
+
+    // Detectar erros de carregamento
+    player.addEventListener('error', function(e) {
+        console.error('❌ Erro ao carregar áudio:', e);
+        console.error('❌ Código do erro:', player.error ? player.error.code : 'desconhecido');
+        console.error('❌ Mensagem:', player.error ? player.error.message : 'sem mensagem');
     });
 
     // Atualizar progresso durante reprodução
