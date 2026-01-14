@@ -523,6 +523,18 @@ $fontFamilyUrl = str_replace(' ', '+', $customization['font_family']);
             width: calc(70vw - 2rem);
         }
 
+        /* Fix: Campos de formulário não devem herdar text-alignment do container */
+        /* Isso garante que players de áudio, VSL, e outros campos com layouts flex não sejam afetados */
+        input, select, textarea, button,
+        .audio-message-container,
+        .video-container,
+        [class*="-player"],
+        [class*="-wrapper"],
+        [style*="display: flex"],
+        [style*="display: grid"] {
+            text-align: initial;
+        }
+
         /* Estilos para intl-tel-input (seletor de país) */
         .iti {
             width: 100% !important;
