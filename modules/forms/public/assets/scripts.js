@@ -570,8 +570,34 @@ function checkFlows() {
 }
 
 function updateProgress() {
+    // Atualizar barra de progresso linear (para compatibilidade)
     const progress = ((currentSlide + 1) / totalSlides) * 100;
-    document.getElementById('progressBar').style.width = progress + '%';
+    const progressBar = document.getElementById('progressBar');
+    if (progressBar) {
+        progressBar.style.width = progress + '%';
+    }
+
+    // Atualizar segmentos estilo Stories
+    const segments = document.querySelectorAll('.progress-segment');
+    if (segments.length > 0) {
+        segments.forEach((segment, index) => {
+            const segmentIndex = parseInt(segment.getAttribute('data-segment-index'));
+
+            if (segmentIndex < currentSlide) {
+                // Etapas concluídas: 100% preenchido
+                segment.style.width = '100%';
+                segment.classList.remove('current');
+            } else if (segmentIndex === currentSlide) {
+                // Etapa atual: 100% preenchido + animação de piscada
+                segment.style.width = '100%';
+                segment.classList.add('current');
+            } else {
+                // Etapas futuras: 0%
+                segment.style.width = '0%';
+                segment.classList.remove('current');
+            }
+        });
+    }
 }
 
 // Atualizar numeração virtual baseada em perguntas efetivamente mostradas

@@ -478,6 +478,20 @@ $fontFamilyUrl = str_replace(' ', '+', $customization['font_family']);
             background-color: var(--primary-color) !important;
         }
 
+        /* Animação de piscada para o segmento atual */
+        .progress-segment.current {
+            animation: storiesPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes storiesPulse {
+            0%, 100% {
+                opacity: 1;
+            }
+            50% {
+                opacity: 0.6;
+            }
+        }
+
         h1, h2, h3, h4, h5, h6, label, p, span {
             color: <?= $customization['text_color'] ?> !important;
         }
@@ -664,9 +678,16 @@ $fontFamilyUrl = str_replace(' ', '+', $customization['font_family']);
     <?php if ($displayMode === 'one-by-one'): ?>
         <!-- Modo One-by-One (TypeForm Style com Scroll) -->
 
-        <div class="fixed top-0 left-0 right-0 z-50">
-            <div class="h-1 bg-gray-100 bg-opacity-30">
-                <div id="progressBar" class="progress-bar h-full transition-all duration-500" style="width: 0%"></div>
+        <!-- Barra de progresso estilo Stories -->
+        <div class="fixed top-0 left-0 right-0 z-50 px-2.5 pt-2.5">
+            <div class="flex gap-1" id="storiesProgress">
+                <?php foreach ($fields as $idx => $f): ?>
+                    <div class="flex-1 h-1 rounded-full bg-white bg-opacity-20 overflow-hidden">
+                        <div class="progress-segment h-full rounded-full transition-all duration-300"
+                             data-segment-index="<?= $idx ?>"
+                             style="width: 0%; background-color: <?= $customization['primary_color'] ?>;"></div>
+                    </div>
+                <?php endforeach; ?>
             </div>
         </div>
 
