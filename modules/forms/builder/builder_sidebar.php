@@ -1261,34 +1261,66 @@ function showCustomizationModal(formId, data) {
                     <!-- Seção: Cores -->
                     <div class="space-y-3">
                         <h3 class="font-semibold text-sm ${isDark ? 'text-zinc-100' : 'text-gray-900'} border-b ${isDark ? 'border-zinc-700' : 'border-gray-200'} pb-2">Cores</h3>
-                        
-                        <div class="grid grid-cols-2 gap-3">
-                            <div>
-                                <label class="${labelClass}">Cor de Fundo</label>
-                                <input type="color" name="background_color" id="backgroundColor" value="${data.background_color || '#ffffff'}" 
-                                       class="w-full h-10 rounded border cursor-pointer"
-                                       onchange="updatePreview()">
+
+                        <div class="space-y-2">
+                            <!-- Cor de Fundo -->
+                            <div class="flex items-center gap-2">
+                                <label class="text-xs ${isDark ? 'text-zinc-300' : 'text-gray-700'} w-28 flex-shrink-0">Cor de Fundo</label>
+                                <div class="flex items-center gap-2 flex-1">
+                                    <input type="color" id="backgroundColorPicker" value="${data.background_color || '#ffffff'}"
+                                           class="w-10 h-8 rounded border cursor-pointer flex-shrink-0"
+                                           onchange="document.getElementById('backgroundColor').value = this.value; updatePreview()">
+                                    <input type="text" name="background_color" id="backgroundColor" value="${data.background_color || '#ffffff'}"
+                                           class="flex-1 px-2 py-1 text-xs rounded border ${isDark ? 'bg-zinc-700 border-zinc-600 text-zinc-100' : 'bg-white border-gray-300 text-gray-900'}"
+                                           placeholder="#ffffff"
+                                           maxlength="7"
+                                           onchange="document.getElementById('backgroundColorPicker').value = this.value; updatePreview()">
+                                </div>
                             </div>
-                            
-                            <div>
-                                <label class="${labelClass}">Cor do Texto</label>
-                                <input type="color" name="text_color" id="textColor" value="${data.text_color || '#000000'}" 
-                                       class="w-full h-10 rounded border cursor-pointer"
-                                       onchange="updatePreview()">
+
+                            <!-- Cor do Texto -->
+                            <div class="flex items-center gap-2">
+                                <label class="text-xs ${isDark ? 'text-zinc-300' : 'text-gray-700'} w-28 flex-shrink-0">Cor do Texto</label>
+                                <div class="flex items-center gap-2 flex-1">
+                                    <input type="color" id="textColorPicker" value="${data.text_color || '#000000'}"
+                                           class="w-10 h-8 rounded border cursor-pointer flex-shrink-0"
+                                           onchange="document.getElementById('textColor').value = this.value; updatePreview()">
+                                    <input type="text" name="text_color" id="textColor" value="${data.text_color || '#000000'}"
+                                           class="flex-1 px-2 py-1 text-xs rounded border ${isDark ? 'bg-zinc-700 border-zinc-600 text-zinc-100' : 'bg-white border-gray-300 text-gray-900'}"
+                                           placeholder="#000000"
+                                           maxlength="7"
+                                           onchange="document.getElementById('textColorPicker').value = this.value; updatePreview()">
+                                </div>
                             </div>
-                            
-                            <div>
-                                <label class="${labelClass}">Cor do Botão</label>
-                                <input type="color" name="primary_color" id="primaryColor" value="${data.primary_color || '#4f46e5'}" 
-                                       class="w-full h-10 rounded border cursor-pointer"
-                                       onchange="updatePreview()">
+
+                            <!-- Cor do Botão -->
+                            <div class="flex items-center gap-2">
+                                <label class="text-xs ${isDark ? 'text-zinc-300' : 'text-gray-700'} w-28 flex-shrink-0">Cor do Botão</label>
+                                <div class="flex items-center gap-2 flex-1">
+                                    <input type="color" id="primaryColorPicker" value="${data.primary_color || '#4f46e5'}"
+                                           class="w-10 h-8 rounded border cursor-pointer flex-shrink-0"
+                                           onchange="document.getElementById('primaryColor').value = this.value; updatePreview()">
+                                    <input type="text" name="primary_color" id="primaryColor" value="${data.primary_color || '#4f46e5'}"
+                                           class="flex-1 px-2 py-1 text-xs rounded border ${isDark ? 'bg-zinc-700 border-zinc-600 text-zinc-100' : 'bg-white border-gray-300 text-gray-900'}"
+                                           placeholder="#4f46e5"
+                                           maxlength="7"
+                                           onchange="document.getElementById('primaryColorPicker').value = this.value; updatePreview()">
+                                </div>
                             </div>
-                            
-                            <div>
-                                <label class="${labelClass}">Cor Texto Botão</label>
-                                <input type="color" name="button_text_color" id="buttonTextColor" value="${data.button_text_color || '#ffffff'}" 
-                                       class="w-full h-10 rounded border cursor-pointer"
-                                       onchange="updatePreview()">
+
+                            <!-- Cor Texto Botão -->
+                            <div class="flex items-center gap-2">
+                                <label class="text-xs ${isDark ? 'text-zinc-300' : 'text-gray-700'} w-28 flex-shrink-0">Cor Texto Botão</label>
+                                <div class="flex items-center gap-2 flex-1">
+                                    <input type="color" id="buttonTextColorPicker" value="${data.button_text_color || '#ffffff'}"
+                                           class="w-10 h-8 rounded border cursor-pointer flex-shrink-0"
+                                           onchange="document.getElementById('buttonTextColor').value = this.value; updatePreview()">
+                                    <input type="text" name="button_text_color" id="buttonTextColor" value="${data.button_text_color || '#ffffff'}"
+                                           class="flex-1 px-2 py-1 text-xs rounded border ${isDark ? 'bg-zinc-700 border-zinc-600 text-zinc-100' : 'bg-white border-gray-300 text-gray-900'}"
+                                           placeholder="#ffffff"
+                                           maxlength="7"
+                                           onchange="document.getElementById('buttonTextColorPicker').value = this.value; updatePreview()">
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1297,12 +1329,17 @@ function showCustomizationModal(formId, data) {
                     <div class="space-y-3">
                         <h3 class="font-semibold text-sm ${isDark ? 'text-zinc-100' : 'text-gray-900'} border-b ${isDark ? 'border-zinc-700' : 'border-gray-200'} pb-2">Imagens</h3>
 
-                        <div class="grid grid-cols-2 gap-4">
+                        <div class="space-y-3">
+                            <!-- Imagem de Fundo -->
                             <div>
-                                <label class="${labelClass}">Imagem de Fundo</label>
-                                <input type="file" id="backgroundImageFile" accept="image/*"
-                                       class="${fileInputClass}"
+                                <label class="text-xs ${isDark ? 'text-zinc-300' : 'text-gray-700'} mb-1 block">Imagem de Fundo</label>
+                                <input type="file" id="backgroundImageFile" accept="image/*" class="hidden"
                                        onchange="handleImageUpload(this, 'background_image')">
+                                <button type="button"
+                                        onclick="document.getElementById('backgroundImageFile').click()"
+                                        class="w-full px-3 py-2 ${isDark ? 'bg-zinc-700 border-zinc-600 hover:bg-zinc-600' : 'bg-white border-gray-300 hover:bg-gray-50'} border rounded text-xs transition-colors">
+                                    <i class="fas fa-upload mr-1"></i> ${data.background_image ? 'Trocar imagem' : 'Fazer upload'}
+                                </button>
                                 <div class="upload-feedback-bg text-xs mt-1"></div>
                                 ${data.background_image ? `
                                     <button type="button" onclick="removeImage('background_image')"
@@ -1312,15 +1349,21 @@ function showCustomizationModal(formId, data) {
                                 ` : ''}
                             </div>
 
+                            <!-- Logotipo -->
                             <div class="${window.userPlan === 'free' ? 'opacity-50' : ''}">
-                                <label class="${labelClass}">
+                                <label class="text-xs ${isDark ? 'text-zinc-300' : 'text-gray-700'} mb-1 block">
                                     Logotipo
                                     ${window.userPlan === 'free' ? '<span class="text-xs bg-gradient-to-r from-purple-600 to-pink-600 text-white px-2 py-1 rounded-full font-semibold ml-1">✨ PRO</span>' : ''}
                                 </label>
-                                <input type="file" id="logoFile" accept="image/*"
-                                       class="${fileInputClass}"
+                                <input type="file" id="logoFile" accept="image/*" class="hidden"
                                        ${window.userPlan === 'free' ? 'disabled' : ''}
                                        onchange="handleImageUpload(this, 'logo')">
+                                <button type="button"
+                                        onclick="document.getElementById('logoFile').click()"
+                                        ${window.userPlan === 'free' ? 'disabled' : ''}
+                                        class="w-full px-3 py-2 ${isDark ? 'bg-zinc-700 border-zinc-600 hover:bg-zinc-600' : 'bg-white border-gray-300 hover:bg-gray-50'} border rounded text-xs transition-colors ${window.userPlan === 'free' ? 'cursor-not-allowed' : ''}">
+                                    <i class="fas fa-upload mr-1"></i> ${data.logo ? 'Trocar logotipo' : 'Fazer upload'}
+                                </button>
                                 <div class="upload-feedback-logo text-xs mt-1"></div>
                                 ${data.logo ? `
                                     <button type="button" onclick="removeImage('logo')"
@@ -1350,9 +1393,38 @@ function showCustomizationModal(formId, data) {
                                 ${fonts.map(font => `<option value="${font}" ${data.font_family === font ? 'selected' : ''} style="font-family: ${font}">${font}</option>`).join('')}
                             </select>
                         </div>
-                        
+
+                        <!-- Alinhamento -->
+                        <div>
+                            <label class="${labelClass}">Alinhamento do Conteúdo</label>
+                            <input type="hidden" name="content_alignment" id="contentAlignment" value="${data.content_alignment || 'center'}">
+                            <div class="flex gap-2">
+                                <button type="button"
+                                        onclick="setAlignment('left')"
+                                        id="alignLeft"
+                                        class="flex-1 px-3 py-2 border rounded transition-colors ${(data.content_alignment || 'center') === 'left' ? (isDark ? 'bg-zinc-600 border-zinc-500' : 'bg-gray-200 border-gray-400') : (isDark ? 'bg-zinc-700 border-zinc-600 hover:bg-zinc-600' : 'bg-white border-gray-300 hover:bg-gray-50')}"
+                                        title="Alinhar à esquerda">
+                                    <i class="fas fa-align-left"></i>
+                                </button>
+                                <button type="button"
+                                        onclick="setAlignment('center')"
+                                        id="alignCenter"
+                                        class="flex-1 px-3 py-2 border rounded transition-colors ${(data.content_alignment || 'center') === 'center' ? (isDark ? 'bg-zinc-600 border-zinc-500' : 'bg-gray-200 border-gray-400') : (isDark ? 'bg-zinc-700 border-zinc-600 hover:bg-zinc-600' : 'bg-white border-gray-300 hover:bg-gray-50')}"
+                                        title="Centralizar">
+                                    <i class="fas fa-align-center"></i>
+                                </button>
+                                <button type="button"
+                                        onclick="setAlignment('right')"
+                                        id="alignRight"
+                                        class="flex-1 px-3 py-2 border rounded transition-colors ${(data.content_alignment || 'center') === 'right' ? (isDark ? 'bg-zinc-600 border-zinc-500' : 'bg-gray-200 border-gray-400') : (isDark ? 'bg-zinc-700 border-zinc-600 hover:bg-zinc-600' : 'bg-white border-gray-300 hover:bg-gray-50')}"
+                                        title="Alinhar à direita">
+                                    <i class="fas fa-align-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
                         <div class="pt-3 border-t ${isDark ? 'border-zinc-700' : 'border-gray-200'}">
-                            <button type="button" onclick="restoreDefaults()" 
+                            <button type="button" onclick="restoreDefaults()"
                                     class="text-sm ${isDark ? 'text-zinc-400 hover:text-zinc-200' : 'text-gray-600 hover:text-gray-900'} hover:underline">
                                 🔄 Restaurar padrões
                             </button>
@@ -1428,6 +1500,7 @@ function showCustomizationModal(formId, data) {
         formData.set('logo', document.getElementById('logoUrl').value);
         formData.set('button_radius', document.getElementById('buttonRadius').value);
         formData.set('font_family', document.getElementById('fontFamily').value);
+        formData.set('content_alignment', document.getElementById('contentAlignment').value);
 
         try {
             const res = await fetch("/modules/forms/customization/save.php", {
@@ -1536,29 +1609,39 @@ window.removeImage = function(fieldName) {
 };
 
 window.restoreDefaults = function() {
-    if (!confirm('Restaurar padrões? Isso irá resetar todas as cores, fonte e imagens para os valores padrão.')) {
+    if (!confirm('Restaurar padrões? Isso irá resetar todas as cores, fonte, alinhamento e imagens para os valores padrão.')) {
         return;
     }
-    
+
+    // Cores
     document.getElementById('backgroundColor').value = '#ffffff';
+    document.getElementById('backgroundColorPicker').value = '#ffffff';
     document.getElementById('textColor').value = '#000000';
+    document.getElementById('textColorPicker').value = '#000000';
     document.getElementById('primaryColor').value = '#4f46e5';
+    document.getElementById('primaryColorPicker').value = '#4f46e5';
     document.getElementById('buttonTextColor').value = '#ffffff';
-    
+    document.getElementById('buttonTextColorPicker').value = '#ffffff';
+
+    // Imagens
     document.getElementById('backgroundImageUrl').value = '';
     document.getElementById('logoUrl').value = '';
     document.getElementById('backgroundImageFile').value = '';
     document.getElementById('logoFile').value = '';
-    
+
+    // Estilo
     document.getElementById('buttonRadius').value = 8;
     document.getElementById('radiusValue').textContent = 8;
     document.getElementById('fontFamily').value = 'Inter';
-    
+
+    // Alinhamento
+    setAlignment('center');
+
     updatePreview();
-    
+
     const feedbackBg = document.querySelector('.upload-feedback-bg');
     const feedbackLogo = document.querySelector('.upload-feedback-logo');
-    
+
     if (feedbackBg) {
         feedbackBg.innerHTML = '✓ Padrões restaurados';
         feedbackBg.className = 'upload-feedback-bg text-xs mt-1 text-green-600 dark:text-green-400';
@@ -1567,6 +1650,32 @@ window.restoreDefaults = function() {
         feedbackLogo.innerHTML = '✓ Padrões restaurados';
         feedbackLogo.className = 'upload-feedback-logo text-xs mt-1 text-green-600 dark:text-green-400';
     }
+};
+
+window.setAlignment = function(alignment) {
+    document.getElementById('contentAlignment').value = alignment;
+
+    // Obter se está em modo dark
+    const isDark = document.documentElement.classList.contains('dark');
+
+    // Atualizar visual dos botões
+    const buttons = ['alignLeft', 'alignCenter', 'alignRight'];
+    const alignments = { alignLeft: 'left', alignCenter: 'center', alignRight: 'right' };
+
+    buttons.forEach(btnId => {
+        const btn = document.getElementById(btnId);
+        if (btn) {
+            if (alignments[btnId] === alignment) {
+                // Botão ativo
+                btn.className = `flex-1 px-3 py-2 border rounded transition-colors ${isDark ? 'bg-zinc-600 border-zinc-500' : 'bg-gray-200 border-gray-400'}`;
+            } else {
+                // Botão inativo
+                btn.className = `flex-1 px-3 py-2 border rounded transition-colors ${isDark ? 'bg-zinc-700 border-zinc-600 hover:bg-zinc-600' : 'bg-white border-gray-300 hover:bg-gray-50'}`;
+            }
+        }
+    });
+
+    updatePreview();
 };
 
 window.updatePreview = function() {

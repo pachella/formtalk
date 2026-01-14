@@ -136,13 +136,30 @@ if (!$customization) {
         'primary_color' => '#4f46e5',
         'button_text_color' => '#ffffff',
         'hide_formtalk_branding' => 0,
-        'font_family' => 'Inter'
+        'font_family' => 'Inter',
+        'content_alignment' => 'center'
     ];
 } else {
     // Garantir que campos existem (fallback para registros antigos)
     $customization['button_text_color'] = $customization['button_text_color'] ?? '#ffffff';
     $customization['font_family'] = $customization['font_family'] ?? 'Inter';
     $customization['hide_formtalk_branding'] = $customization['hide_formtalk_branding'] ?? 0;
+    $customization['content_alignment'] = $customization['content_alignment'] ?? 'center';
+}
+
+// Definir classes de alinhamento baseado na configuração
+$alignmentClass = '';
+switch ($customization['content_alignment']) {
+    case 'left':
+        $alignmentClass = 'mr-auto';
+        break;
+    case 'right':
+        $alignmentClass = 'ml-auto';
+        break;
+    case 'center':
+    default:
+        $alignmentClass = 'mx-auto';
+        break;
 }
 
 // Se o formulário estiver em rascunho, apenas o criador pode visualizar
@@ -648,7 +665,7 @@ $fontFamilyUrl = str_replace(' ', '+', $customization['font_family']);
         </div>
 
         <div class="flex-1 flex items-center justify-center px-6 py-12">
-            <div class="w-full max-w-3xl">
+            <div class="w-full max-w-3xl <?= $alignmentClass ?>">
 
                 <form id="formOneByOne">
                     <input type="hidden" name="form_id" value="<?= $formId ?>">
@@ -779,7 +796,7 @@ $fontFamilyUrl = str_replace(' ', '+', $customization['font_family']);
         <!-- Modo All-at-Once (Tradicional Clean) -->
 
         <div class="min-h-screen py-12 px-6">
-            <div class="max-w-3xl mx-auto">
+            <div class="max-w-3xl <?= $alignmentClass ?>">
 
                 <?php if (!empty($customization['logo'])): ?>
                     <div class="text-center mb-8">

@@ -46,7 +46,7 @@ try {
     
     if ($exists) {
         // UPDATE
-        $sql = "UPDATE form_customizations SET 
+        $sql = "UPDATE form_customizations SET
                 background_color = :background_color,
                 text_color = :text_color,
                 primary_color = :primary_color,
@@ -54,16 +54,17 @@ try {
                 background_image = :background_image,
                 logo = :logo,
                 button_radius = :button_radius,
-                font_family = :font_family
+                font_family = :font_family,
+                content_alignment = :content_alignment
                 WHERE form_id = :form_id";
     } else {
         // INSERT
-        $sql = "INSERT INTO form_customizations 
-                (form_id, background_color, text_color, primary_color, button_text_color, background_image, logo, button_radius, font_family) 
-                VALUES 
-                (:form_id, :background_color, :text_color, :primary_color, :button_text_color, :background_image, :logo, :button_radius, :font_family)";
+        $sql = "INSERT INTO form_customizations
+                (form_id, background_color, text_color, primary_color, button_text_color, background_image, logo, button_radius, font_family, content_alignment)
+                VALUES
+                (:form_id, :background_color, :text_color, :primary_color, :button_text_color, :background_image, :logo, :button_radius, :font_family, :content_alignment)";
     }
-    
+
     $stmt = $pdo->prepare($sql);
     $stmt->bindValue(':form_id', $formId, PDO::PARAM_INT);
     $stmt->bindValue(':background_color', $_POST['background_color'] ?? '#ffffff');
@@ -74,6 +75,7 @@ try {
     $stmt->bindValue(':logo', $_POST['logo'] ?? '');
     $stmt->bindValue(':button_radius', $_POST['button_radius'] ?? 8, PDO::PARAM_INT);
     $stmt->bindValue(':font_family', $_POST['font_family'] ?? 'Inter');
+    $stmt->bindValue(':content_alignment', $_POST['content_alignment'] ?? 'center');
     
     $stmt->execute();
     
