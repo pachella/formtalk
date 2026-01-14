@@ -936,27 +936,39 @@ if (document.getElementById('formOneByOne')) {
             if (res.ok && isSuccess) {
                 console.log('✅ Formulário enviado com sucesso!');
 
-                // Limpar segmentos do progress bar
-                const segments = document.querySelectorAll('.progress-segment');
-                if (segments.length > 0) {
-                    segments.forEach(segment => {
-                        segment.style.width = '100%';
-                        segment.classList.remove('current');
-                    });
-                }
+                try {
+                    // Limpar segmentos do progress bar
+                    const segments = document.querySelectorAll('.progress-segment');
+                    if (segments.length > 0) {
+                        segments.forEach(segment => {
+                            segment.style.width = '100%';
+                            segment.classList.remove('current');
+                        });
+                    }
 
-                slides.forEach(slide => slide.style.display = 'none');
+                    // Esconder todos os slides
+                    slides.forEach(slide => slide.style.display = 'none');
 
-                // Usar a função para gerar mensagem com redirecionamento
-                document.querySelector('form').innerHTML = generateSuccessMessage(score);
+                    // Usar seletor específico para o form
+                    const form = document.getElementById('formOneByOne');
+                    if (form) {
+                        form.innerHTML = generateSuccessMessage(score);
+                    } else {
+                        console.error('❌ Form #formOneByOne não encontrado');
+                    }
 
-                // Inicializar animação Lottie se existir
-                setTimeout(() => initLottieSuccess(), 100);
+                    // Inicializar animação Lottie se existir
+                    setTimeout(() => initLottieSuccess(), 100);
 
-                // Barra linear (compatibilidade)
-                const progressBar = document.getElementById('progressBar');
-                if (progressBar) {
-                    progressBar.style.width = '100%';
+                    // Barra linear (compatibilidade)
+                    const progressBar = document.getElementById('progressBar');
+                    if (progressBar) {
+                        progressBar.style.width = '100%';
+                    }
+                } catch (innerError) {
+                    console.error('❌ Erro ao processar sucesso:', innerError);
+                    console.error('❌ Stack interno:', innerError.stack);
+                    // Não mostrar alert aqui pois o formulário foi enviado com sucesso
                 }
             } else {
                 console.error('❌ Erro no envio:', result);
@@ -1073,13 +1085,22 @@ if (document.getElementById('formAllAtOnce')) {
             console.log('📊 Resposta do servidor (all-at-once):', { result, score });
 
             if (res.ok && isSuccess) {
-                window.scrollTo({ top: 0, behavior: 'smooth' });
+                try {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
 
-                // Usar a função para gerar mensagem com redirecionamento
-                this.parentElement.innerHTML = `<div class="py-20">${generateSuccessMessage(score)}</div>`;
+                    // Usar a função para gerar mensagem com redirecionamento
+                    const formContainer = this.parentElement;
+                    if (formContainer) {
+                        formContainer.innerHTML = `<div class="py-20">${generateSuccessMessage(score)}</div>`;
+                    }
 
-                // Inicializar animação Lottie se existir
-                setTimeout(() => initLottieSuccess(), 100);
+                    // Inicializar animação Lottie se existir
+                    setTimeout(() => initLottieSuccess(), 100);
+                } catch (innerError) {
+                    console.error('❌ Erro ao processar sucesso (all-at-once):', innerError);
+                    console.error('❌ Stack interno:', innerError.stack);
+                    // Não mostrar alert aqui pois o formulário foi enviado com sucesso
+                }
             } else {
                 alert('Erro ao enviar: ' + (result.message || resultText));
                 submitBtn.disabled = false;
