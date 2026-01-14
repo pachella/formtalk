@@ -16,49 +16,50 @@ $audioId = 'audio-' . $field['id'];
          data-audio-wait="<?= $waitTime ?>"
          data-audio-autoplay="<?= $autoplay ?>">
 
-        <!-- Player de Áudio Minimalista -->
-        <div class="audio-player-wrapper" style="background: rgba(var(--primary-color-rgb, 99, 102, 241), 0.05); border: 1px solid rgba(var(--primary-color-rgb, 99, 102, 241), 0.2); border-radius: 16px; padding: 16px;">
-            <!-- Elemento de áudio oculto -->
-            <audio id="<?= $audioId ?>-player" src="<?= htmlspecialchars($audioUrl) ?>" preload="metadata"></audio>
+        <div style="display: flex; align-items: center; gap: 16px;">
+            <!-- Visualizador de áudio FORA da caixa (estilo futurista/Jarvis) -->
+            <div id="<?= $audioId ?>-visualizer" class="audio-visualizer-futuristic" style="display: flex; align-items: center; justify-content: center; gap: 2px; height: 50px; width: 50px; flex-shrink: 0;">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
 
-            <div style="display: flex; align-items: center; gap: 16px;">
-                <!-- Visualizador de áudio (espectro de barras) -->
-                <div id="<?= $audioId ?>-visualizer" class="audio-visualizer" style="display: flex; align-items: center; gap: 3px; height: 40px;">
-                    <div class="bar"></div>
-                    <div class="bar"></div>
-                    <div class="bar"></div>
-                    <div class="bar"></div>
-                    <div class="bar"></div>
-                </div>
+            <!-- Player de Áudio Minimalista -->
+            <div class="audio-player-wrapper" style="flex: 1; background: rgba(var(--primary-color-rgb, 99, 102, 241), 0.05); border: 1px solid rgba(var(--primary-color-rgb, 99, 102, 241), 0.2); border-radius: 16px; padding: 12px 16px;">
+                <!-- Elemento de áudio oculto -->
+                <audio id="<?= $audioId ?>-player" src="<?= htmlspecialchars($audioUrl) ?>" preload="metadata"></audio>
 
-                <!-- Barra de progresso e tempo -->
-                <div style="flex: 1; min-width: 0;">
+                <!-- Layout: Tempo | Barra | Tempo | Botões -->
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <!-- Tempo inicial -->
+                    <span id="<?= $audioId ?>-current-time" style="font-size: 12px; opacity: 0.7; white-space: nowrap; flex-shrink: 0;">0:00</span>
+
                     <!-- Barra de progresso -->
-                    <div id="<?= $audioId ?>-progress-bar" style="position: relative; height: 6px; background: rgba(var(--primary-color-rgb, 99, 102, 241), 0.15); border-radius: 3px; cursor: pointer; margin-bottom: 6px;">
+                    <div id="<?= $audioId ?>-progress-bar" style="flex: 1; position: relative; height: 6px; background: rgba(var(--primary-color-rgb, 99, 102, 241), 0.15); border-radius: 3px; cursor: pointer;">
                         <div id="<?= $audioId ?>-progress" style="position: absolute; height: 100%; background: var(--primary-color, #6366f1); border-radius: 3px; width: 0%; transition: width 0.1s;"></div>
                     </div>
 
-                    <!-- Tempo -->
-                    <div style="display: flex; justify-content: space-between; font-size: 12px; opacity: 0.7;">
-                        <span id="<?= $audioId ?>-current-time">0:00</span>
-                        <span id="<?= $audioId ?>-duration">0:00</span>
+                    <!-- Tempo final -->
+                    <span id="<?= $audioId ?>-duration" style="font-size: 12px; opacity: 0.7; white-space: nowrap; flex-shrink: 0;">0:00</span>
+
+                    <!-- Botões -->
+                    <div style="display: flex; align-items: center; gap: 8px; flex-shrink: 0;">
+                        <button type="button" id="<?= $audioId ?>-play-btn"
+                                style="width: 36px; height: 36px; border-radius: 50%; background: var(--primary-color, #6366f1); color: white; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;"
+                                onmouseover="this.style.opacity='0.9'"
+                                onmouseout="this.style.opacity='1'">
+                            <i class="fas fa-play" style="font-size: 12px; margin-left: 2px;"></i>
+                        </button>
+
+                        <button type="button" id="<?= $audioId ?>-speed-btn"
+                                style="padding: 4px 8px; border-radius: 12px; background: rgba(var(--primary-color-rgb, 99, 102, 241), 0.1); border: 1px solid rgba(var(--primary-color-rgb, 99, 102, 241), 0.2); font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap;">
+                            1x
+                        </button>
                     </div>
-                </div>
-
-                <!-- Botão Play/Pause + Velocidade -->
-                <div style="display: flex; align-items: center; gap: 8px;">
-                    <button type="button" id="<?= $audioId ?>-play-btn"
-                            style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary-color, #6366f1); color: white; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; flex-shrink: 0;"
-                            onmouseover="this.style.opacity='0.9'"
-                            onmouseout="this.style.opacity='1'">
-                        <i class="fas fa-play" style="font-size: 14px; margin-left: 2px;"></i>
-                    </button>
-
-                    <!-- Indicador de velocidade -->
-                    <button type="button" id="<?= $audioId ?>-speed-btn"
-                            style="padding: 4px 8px; border-radius: 12px; background: rgba(var(--primary-color-rgb, 99, 102, 241), 0.1); border: 1px solid rgba(var(--primary-color-rgb, 99, 102, 241), 0.2); font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap;">
-                        1x
-                    </button>
                 </div>
             </div>
         </div>
@@ -66,29 +67,48 @@ $audioId = 'audio-' . $field['id'];
 <?php endif; ?>
 
 <style>
-.audio-visualizer .bar {
-    width: 3px;
+/* Visualizador futurista estilo Jarvis/IA */
+.audio-visualizer-futuristic .bar {
+    width: 2px;
     background: var(--primary-color, #6366f1);
     border-radius: 2px;
-    height: 8px;
-    transition: height 0.1s ease;
-    opacity: 0.6;
+    height: 6px;
+    transition: all 0.15s ease;
+    opacity: 0.3;
+    box-shadow: 0 0 0px var(--primary-color, #6366f1);
 }
 
-.audio-visualizer.playing .bar {
-    animation: audioWave 0.8s ease-in-out infinite;
+.audio-visualizer-futuristic.playing .bar {
+    animation: jarvisWave 1.2s ease-in-out infinite;
     opacity: 1;
+    box-shadow: 0 0 8px var(--primary-color, #6366f1), 0 0 12px var(--primary-color, #6366f1);
 }
 
-.audio-visualizer.playing .bar:nth-child(1) { animation-delay: 0s; }
-.audio-visualizer.playing .bar:nth-child(2) { animation-delay: 0.1s; }
-.audio-visualizer.playing .bar:nth-child(3) { animation-delay: 0.2s; }
-.audio-visualizer.playing .bar:nth-child(4) { animation-delay: 0.3s; }
-.audio-visualizer.playing .bar:nth-child(5) { animation-delay: 0.4s; }
+.audio-visualizer-futuristic.playing .bar:nth-child(1) { animation-delay: 0s; }
+.audio-visualizer-futuristic.playing .bar:nth-child(2) { animation-delay: 0.1s; }
+.audio-visualizer-futuristic.playing .bar:nth-child(3) { animation-delay: 0.2s; }
+.audio-visualizer-futuristic.playing .bar:nth-child(4) { animation-delay: 0.3s; }
+.audio-visualizer-futuristic.playing .bar:nth-child(5) { animation-delay: 0.4s; }
+.audio-visualizer-futuristic.playing .bar:nth-child(6) { animation-delay: 0.5s; }
+.audio-visualizer-futuristic.playing .bar:nth-child(7) { animation-delay: 0.6s; }
 
-@keyframes audioWave {
-    0%, 100% { height: 8px; }
-    50% { height: 32px; }
+@keyframes jarvisWave {
+    0%, 100% {
+        height: 6px;
+        transform: scaleY(1);
+    }
+    25% {
+        height: 35px;
+        transform: scaleY(1.1);
+    }
+    50% {
+        height: 20px;
+        transform: scaleY(1);
+    }
+    75% {
+        height: 40px;
+        transform: scaleY(1.1);
+    }
 }
 </style>
 
@@ -147,13 +167,13 @@ $audioId = 'audio-' . $field['id'];
     playBtn.addEventListener('click', function() {
         if (isPlaying) {
             player.pause();
-            playBtn.innerHTML = '<i class="fas fa-play" style="font-size: 14px; margin-left: 2px;"></i>';
+            playBtn.innerHTML = '<i class="fas fa-play" style="font-size: 12px; margin-left: 2px;"></i>';
             visualizer.classList.remove('playing');
             isPlaying = false;
             console.log('⏸️ Áudio pausado');
         } else {
             player.play();
-            playBtn.innerHTML = '<i class="fas fa-pause" style="font-size: 14px;"></i>';
+            playBtn.innerHTML = '<i class="fas fa-pause" style="font-size: 12px;"></i>';
             visualizer.classList.add('playing');
             isPlaying = true;
             console.log('▶️ Áudio reproduzindo');
@@ -162,7 +182,7 @@ $audioId = 'audio-' . $field['id'];
 
     // Quando áudio terminar
     player.addEventListener('ended', function() {
-        playBtn.innerHTML = '<i class="fas fa-play" style="font-size: 14px; margin-left: 2px;"></i>';
+        playBtn.innerHTML = '<i class="fas fa-play" style="font-size: 12px; margin-left: 2px;"></i>';
         visualizer.classList.remove('playing');
         isPlaying = false;
         progress.style.width = '0%';
@@ -291,7 +311,7 @@ $audioId = 'audio-' . $field['id'];
 
         console.log('▶️ Iniciando autoplay...');
         player.play();
-        playBtn.innerHTML = '<i class="fas fa-pause" style="font-size: 14px;"></i>';
+        playBtn.innerHTML = '<i class="fas fa-pause" style="font-size: 12px;"></i>';
         visualizer.classList.add('playing');
         isPlaying = true;
         console.log('✅ Autoplay iniciado');
