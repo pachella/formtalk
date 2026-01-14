@@ -16,62 +16,81 @@ $audioId = 'audio-' . $field['id'];
          data-audio-wait="<?= $waitTime ?>"
          data-audio-autoplay="<?= $autoplay ?>">
 
-        <!-- Player de Áudio Customizado -->
-        <div class="bg-gradient-to-br from-indigo-50 to-purple-50 dark:from-indigo-900/20 dark:to-purple-900/20 rounded-xl p-6 border border-indigo-200 dark:border-indigo-800">
+        <!-- Player de Áudio Minimalista -->
+        <div class="audio-player-wrapper" style="background: rgba(var(--primary-color-rgb, 99, 102, 241), 0.05); border: 1px solid rgba(var(--primary-color-rgb, 99, 102, 241), 0.2); border-radius: 16px; padding: 16px;">
             <!-- Elemento de áudio oculto -->
             <audio id="<?= $audioId ?>-player" src="<?= htmlspecialchars($audioUrl) ?>" preload="metadata"></audio>
 
-            <!-- Controles do player -->
-            <div class="flex items-center gap-4 mb-4">
-                <!-- Botão Play/Pause -->
-                <button type="button" id="<?= $audioId ?>-play-btn"
-                        class="w-14 h-14 rounded-full bg-gradient-to-br from-indigo-500 to-purple-600 text-white flex items-center justify-center hover:shadow-lg transition-all transform hover:scale-105 focus:outline-none">
-                    <i class="fas fa-play text-lg"></i>
-                </button>
+            <div style="display: flex; align-items: center; gap: 16px;">
+                <!-- Visualizador de áudio (espectro de barras) -->
+                <div id="<?= $audioId ?>-visualizer" class="audio-visualizer" style="display: flex; align-items: center; gap: 3px; height: 40px;">
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                    <div class="bar"></div>
+                </div>
 
-                <!-- Tempo e Barra de Progresso -->
-                <div class="flex-1">
-                    <div class="flex items-center justify-between text-xs text-gray-600 dark:text-gray-300 mb-1">
+                <!-- Barra de progresso e tempo -->
+                <div style="flex: 1; min-width: 0;">
+                    <!-- Barra de progresso -->
+                    <div id="<?= $audioId ?>-progress-bar" style="position: relative; height: 6px; background: rgba(var(--primary-color-rgb, 99, 102, 241), 0.15); border-radius: 3px; cursor: pointer; margin-bottom: 6px;">
+                        <div id="<?= $audioId ?>-progress" style="position: absolute; height: 100%; background: var(--primary-color, #6366f1); border-radius: 3px; width: 0%; transition: width 0.1s;"></div>
+                    </div>
+
+                    <!-- Tempo -->
+                    <div style="display: flex; justify-content: space-between; font-size: 12px; opacity: 0.7;">
                         <span id="<?= $audioId ?>-current-time">0:00</span>
                         <span id="<?= $audioId ?>-duration">0:00</span>
                     </div>
-                    <div class="relative h-2 bg-gray-200 dark:bg-gray-700 rounded-full cursor-pointer" id="<?= $audioId ?>-progress-bar">
-                        <div id="<?= $audioId ?>-progress" class="absolute h-full bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full transition-all" style="width: 0%"></div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Controles adicionais -->
-            <div class="flex items-center justify-between gap-4 text-sm">
-                <!-- Velocidade -->
-                <div class="flex items-center gap-2">
-                    <i class="fas fa-tachometer-alt text-gray-500 dark:text-gray-400"></i>
-                    <select id="<?= $audioId ?>-speed"
-                            class="px-2 py-1 text-xs rounded bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-                        <option value="0.5">0.5x</option>
-                        <option value="0.75">0.75x</option>
-                        <option value="1" selected>1x</option>
-                        <option value="1.25">1.25x</option>
-                        <option value="1.5">1.5x</option>
-                        <option value="2">2x</option>
-                    </select>
                 </div>
 
-                <!-- Volume -->
-                <div class="flex items-center gap-2 flex-1 max-w-xs">
-                    <i class="fas fa-volume-up text-gray-500 dark:text-gray-400"></i>
-                    <input type="range"
-                           id="<?= $audioId ?>-volume"
-                           min="0"
-                           max="100"
-                           value="100"
-                           class="flex-1 h-1 bg-gray-200 dark:bg-gray-700 rounded-full appearance-none cursor-pointer"
-                           style="accent-color: #6366f1;">
+                <!-- Botão Play/Pause + Velocidade -->
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <button type="button" id="<?= $audioId ?>-play-btn"
+                            style="width: 40px; height: 40px; border-radius: 50%; background: var(--primary-color, #6366f1); color: white; border: none; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s; flex-shrink: 0;"
+                            onmouseover="this.style.opacity='0.9'"
+                            onmouseout="this.style.opacity='1'">
+                        <i class="fas fa-play" style="font-size: 14px; margin-left: 2px;"></i>
+                    </button>
+
+                    <!-- Indicador de velocidade -->
+                    <button type="button" id="<?= $audioId ?>-speed-btn"
+                            style="padding: 4px 8px; border-radius: 12px; background: rgba(var(--primary-color-rgb, 99, 102, 241), 0.1); border: 1px solid rgba(var(--primary-color-rgb, 99, 102, 241), 0.2); font-size: 11px; font-weight: 600; cursor: pointer; transition: all 0.2s; white-space: nowrap;">
+                        1x
+                    </button>
                 </div>
             </div>
         </div>
     </div>
 <?php endif; ?>
+
+<style>
+.audio-visualizer .bar {
+    width: 3px;
+    background: var(--primary-color, #6366f1);
+    border-radius: 2px;
+    height: 8px;
+    transition: height 0.1s ease;
+    opacity: 0.6;
+}
+
+.audio-visualizer.playing .bar {
+    animation: audioWave 0.8s ease-in-out infinite;
+    opacity: 1;
+}
+
+.audio-visualizer.playing .bar:nth-child(1) { animation-delay: 0s; }
+.audio-visualizer.playing .bar:nth-child(2) { animation-delay: 0.1s; }
+.audio-visualizer.playing .bar:nth-child(3) { animation-delay: 0.2s; }
+.audio-visualizer.playing .bar:nth-child(4) { animation-delay: 0.3s; }
+.audio-visualizer.playing .bar:nth-child(5) { animation-delay: 0.4s; }
+
+@keyframes audioWave {
+    0%, 100% { height: 8px; }
+    50% { height: 32px; }
+}
+</style>
 
 <script>
 (function() {
@@ -88,12 +107,12 @@ $audioId = 'audio-' . $field['id'];
 
     const player = document.getElementById(audioId + '-player');
     const playBtn = document.getElementById(audioId + '-play-btn');
+    const speedBtn = document.getElementById(audioId + '-speed-btn');
     const progressBar = document.getElementById(audioId + '-progress-bar');
     const progress = document.getElementById(audioId + '-progress');
     const currentTimeEl = document.getElementById(audioId + '-current-time');
     const durationEl = document.getElementById(audioId + '-duration');
-    const speedSelect = document.getElementById(audioId + '-speed');
-    const volumeSlider = document.getElementById(audioId + '-volume');
+    const visualizer = document.getElementById(audioId + '-visualizer');
 
     if (!player) {
         console.error('❌ Player de áudio não encontrado');
@@ -101,6 +120,8 @@ $audioId = 'audio-' . $field['id'];
     }
 
     let isPlaying = false;
+    let currentSpeed = 1;
+    const speeds = [1, 1.5, 2];
 
     // Formatar tempo (segundos para MM:SS)
     function formatTime(seconds) {
@@ -126,12 +147,14 @@ $audioId = 'audio-' . $field['id'];
     playBtn.addEventListener('click', function() {
         if (isPlaying) {
             player.pause();
-            playBtn.innerHTML = '<i class="fas fa-play text-lg"></i>';
+            playBtn.innerHTML = '<i class="fas fa-play" style="font-size: 14px; margin-left: 2px;"></i>';
+            visualizer.classList.remove('playing');
             isPlaying = false;
             console.log('⏸️ Áudio pausado');
         } else {
             player.play();
-            playBtn.innerHTML = '<i class="fas fa-pause text-lg"></i>';
+            playBtn.innerHTML = '<i class="fas fa-pause" style="font-size: 14px;"></i>';
+            visualizer.classList.add('playing');
             isPlaying = true;
             console.log('▶️ Áudio reproduzindo');
         }
@@ -139,9 +162,11 @@ $audioId = 'audio-' . $field['id'];
 
     // Quando áudio terminar
     player.addEventListener('ended', function() {
-        playBtn.innerHTML = '<i class="fas fa-play text-lg"></i>';
+        playBtn.innerHTML = '<i class="fas fa-play" style="font-size: 14px; margin-left: 2px;"></i>';
+        visualizer.classList.remove('playing');
         isPlaying = false;
         progress.style.width = '0%';
+        player.currentTime = 0;
         console.log('✅ Áudio finalizado');
     });
 
@@ -154,14 +179,13 @@ $audioId = 'audio-' . $field['id'];
     });
 
     // Controle de velocidade
-    speedSelect.addEventListener('change', function() {
-        player.playbackRate = parseFloat(this.value);
-        console.log('⚡ Velocidade alterada para:', this.value + 'x');
-    });
-
-    // Controle de volume
-    volumeSlider.addEventListener('input', function() {
-        player.volume = this.value / 100;
+    speedBtn.addEventListener('click', function() {
+        const currentIndex = speeds.indexOf(currentSpeed);
+        const nextIndex = (currentIndex + 1) % speeds.length;
+        currentSpeed = speeds[nextIndex];
+        player.playbackRate = currentSpeed;
+        speedBtn.textContent = currentSpeed + 'x';
+        console.log('⚡ Velocidade alterada para:', currentSpeed + 'x');
     });
 
     // Função para bloquear o botão com temporizador
@@ -190,6 +214,9 @@ $audioId = 'audio-' . $field['id'];
             return;
         }
 
+        // Encontrar o texto de hint "pressione Enter"
+        const hintText = slide.querySelector('.text-xs.text-gray-400');
+
         console.log('✅ Botão encontrado:', button);
 
         // Desabilitar botão inicialmente
@@ -198,6 +225,12 @@ $audioId = 'audio-' . $field['id'];
         button.setAttribute('data-audio-blocked', 'true');
 
         const originalButtonHTML = button.innerHTML;
+        const originalHintText = hintText ? hintText.textContent : '';
+
+        // Alterar texto do hint
+        if (hintText) {
+            hintText.textContent = 'Aguarde para avançar';
+        }
 
         // Bloquear tecla Enter
         const enterBlocker = function(e) {
@@ -236,6 +269,11 @@ $audioId = 'audio-' . $field['id'];
                 button.removeAttribute('data-audio-blocked');
                 button.innerHTML = buttonText;
 
+                // Restaurar texto do hint
+                if (hintText) {
+                    hintText.textContent = originalHintText;
+                }
+
                 document.removeEventListener('keydown', enterBlocker, true);
                 slide.removeEventListener('keydown', enterBlocker, true);
 
@@ -253,7 +291,8 @@ $audioId = 'audio-' . $field['id'];
 
         console.log('▶️ Iniciando autoplay...');
         player.play();
-        playBtn.innerHTML = '<i class="fas fa-pause text-lg"></i>';
+        playBtn.innerHTML = '<i class="fas fa-pause" style="font-size: 14px;"></i>';
+        visualizer.classList.add('playing');
         isPlaying = true;
         console.log('✅ Autoplay iniciado');
     }
