@@ -1438,7 +1438,7 @@ function showCustomizationModal(formId, data) {
                     <div id="customizationPreview" class="border-2 border-dashed ${isDark ? 'border-zinc-600' : 'border-gray-300'} rounded-md p-6 min-h-[450px] flex flex-col items-center justify-center"
                          style="background-color: ${data.background_color || '#ffffff'}; ${data.background_image ? `background-image: url('${data.background_image}'); background-size: cover; background-position: center;` : ''}">
                         ${data.logo ? `<img src="${data.logo}" alt="Logo" class="max-w-[150px] h-auto mb-6" id="previewLogo">` : '<div id="previewLogo"></div>'}
-                        <div id="previewContent" class="max-w-md ${(data.content_alignment || 'center') === 'left' ? 'mr-auto text-left' : (data.content_alignment || 'center') === 'right' ? 'ml-auto text-right' : 'mx-auto text-center'}">
+                        <div id="previewContent" class="max-w-md w-full text-${data.content_alignment || 'center'}">
                             <h4 class="text-2xl font-bold mb-3" id="previewTitle" style="color: ${data.text_color || '#000000'}; font-family: ${data.font_family || 'Inter'}">Título do Formulário</h4>
                             <p class="text-sm mb-6 opacity-90" id="previewText" style="color: ${data.text_color || '#000000'}; font-family: ${data.font_family || 'Inter'}">Esta é uma prévia de como seu formulário ficará.</p>
                             <button type="button" id="previewButton" class="px-8 py-3 font-medium text-sm transition-colors"
@@ -1730,18 +1730,18 @@ window.updatePreview = function() {
         if (buttonRadius) previewButton.style.borderRadius = buttonRadius + 'px';
     }
 
-    // Aplicar alinhamento
+    // Aplicar alinhamento de texto (container continua centralizado)
     if (previewContent) {
-        // Remover classes antigas
-        previewContent.classList.remove('mr-auto', 'ml-auto', 'mx-auto', 'text-left', 'text-right', 'text-center');
+        // Remover classes antigas de alinhamento de texto
+        previewContent.classList.remove('text-left', 'text-right', 'text-center');
 
-        // Adicionar novas classes baseado no alinhamento
+        // Adicionar nova classe baseado no alinhamento
         if (alignment === 'left') {
-            previewContent.classList.add('mr-auto', 'text-left');
+            previewContent.classList.add('text-left');
         } else if (alignment === 'right') {
-            previewContent.classList.add('ml-auto', 'text-right');
+            previewContent.classList.add('text-right');
         } else {
-            previewContent.classList.add('mx-auto', 'text-center');
+            previewContent.classList.add('text-center');
         }
     }
 };
