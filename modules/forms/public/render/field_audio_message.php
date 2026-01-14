@@ -31,7 +31,7 @@ $audioId = 'audio-' . $field['id'];
             <!-- Player de Áudio Minimalista -->
             <div class="audio-player-wrapper" style="flex: 1; background: rgba(var(--primary-color-rgb, 99, 102, 241), 0.05); border: 1px solid rgba(var(--primary-color-rgb, 99, 102, 241), 0.2); border-radius: 16px; padding: 12px 16px;">
                 <!-- Elemento de áudio oculto -->
-                <audio id="<?= $audioId ?>-player" src="<?= htmlspecialchars($audioUrl) ?>" preload="metadata"></audio>
+                <audio id="<?= $audioId ?>-player" preload="auto" crossorigin="anonymous"></audio>
 
                 <!-- Layout: Tempo | Barra | Tempo | Botões -->
                 <div style="display: flex; align-items: center; gap: 12px;">
@@ -137,13 +137,21 @@ $audioId = 'audio-' . $field['id'];
         return;
     }
 
-    console.log('🎵 Player encontrado:', player);
-    console.log('🎵 URL do áudio:', player.src);
-    console.log('🎵 ReadyState:', player.readyState);
+    // Definir URL do áudio com cache busting e forçar carregamento
+    const audioUrl = '<?= htmlspecialchars($audioUrl) ?>';
+    const cacheBuster = '?t=' + Date.now();
+    player.src = audioUrl + cacheBuster;
+
+    console.log('🎵 Audio URL:', audioUrl);
+    console.log('🎵 Loading audio...');
+
+    // Forçar carregamento do áudio
+    player.load();
 
     let isPlaying = false;
     let currentSpeed = 1;
     const speeds = [1, 1.5, 2];
+    let audioInitialized = false;
 
     // Formatar tempo (segundos para MM:SS)
     function formatTime(seconds) {
@@ -164,9 +172,9 @@ $audioId = 'audio-' . $field['id'];
 
     // Atualizar duração quando metadados carregarem
     player.addEventListener('loadedmetadata', function() {
-        console.log('📊 Metadados carregados!');
-        console.log('📊 Duração do áudio:', player.duration + 's');
+        audioInitialized = true;
         durationEl.textContent = formatTime(player.duration);
+        console.log('✅ Áudio carregado! Duração:', player.duration + 's');
     });
 
     // Detectar erros de carregamento
@@ -305,80 +313,81 @@ $audioId = 'audio-' . $field['id'];
         }, waitTime * 1000);
     }
 
-    // Função para autoplay
+    // Função para autoplay (simplificada)
     function startAutoplay() {
-        if (!autoplay) {
-            console.log('⏸️ Autoplay desativado');
-            return;
-        }
+        if (!autoplay || !audioInitialized) return;
 
         console.log('▶️ Iniciando autoplay...');
-        player.play();
+        player.play().catch(function(error) {
+            console.log('⚠️ Autoplay bloqueado pelo navegador:', error);
+        });
         playBtn.innerHTML = '<i class="fas fa-pause" style="font-size: 12px;"></i>';
         visualizer.classList.add('playing');
         isPlaying = true;
-        console.log('✅ Autoplay iniciado');
     }
 
-    // Função para inicializar quando o slide ficar visível
-    function initWhenVisible() {
+    // Inicializar quando áudio estiver carregado E slide visível
+    function checkAndInit() {
         const audioContainer = document.querySelector('[data-audio-id="' + audioId + '"]');
-        if (!audioContainer) {
-            console.error('❌ Audio container não encontrado');
-            return;
-        }
+        if (!audioContainer) return;
 
         const slide = audioContainer.closest('.question-slide');
-        if (!slide) {
-            console.error('❌ Slide não encontrado');
-            return;
-        }
+        if (!slide) return;
 
         const isVisible = slide.style.display !== 'none';
-        console.log('👁️ Slide visível?', isVisible);
 
-        if (isVisible) {
-            console.log('🚀 Slide já visível, iniciando...');
+        if (isVisible && audioInitialized) {
+            console.log('✅ Áudio pronto e visível, executando ações...');
 
+            // Bloquear botão se necessário
             if (waitTime > 0) {
-                setTimeout(blockButton, 300);
+                setTimeout(blockButton, 100);
             }
 
+            // Autoplay se habilitado
             if (autoplay) {
-                setTimeout(startAutoplay, 800);
+                setTimeout(startAutoplay, 300);
             }
-        } else {
-            console.log('⏳ Aguardando slide ficar visível...');
 
-            const observer = new MutationObserver(function(mutations) {
-                const nowVisible = slide.style.display !== 'none';
-
-                if (nowVisible) {
-                    console.log('✅ Slide ficou visível!');
-                    observer.disconnect();
-
-                    if (waitTime > 0) {
-                        setTimeout(blockButton, 300);
-                    }
-
-                    if (autoplay) {
-                        setTimeout(startAutoplay, 800);
-                    }
-                }
-            });
-
-            observer.observe(slide, {
-                attributes: true,
-                attributeFilter: ['style']
-            });
+            // Remover o observer se existir
+            if (window['observer_' + audioId]) {
+                window['observer_' + audioId].disconnect();
+                delete window['observer_' + audioId];
+            }
         }
     }
 
-    // Inicializar quando o DOM estiver pronto
+    // Observer para quando o slide ficar visível
+    function setupVisibilityObserver() {
+        const audioContainer = document.querySelector('[data-audio-id="' + audioId + '"]');
+        if (!audioContainer) return;
+
+        const slide = audioContainer.closest('.question-slide');
+        if (!slide) return;
+
+        const observer = new MutationObserver(checkAndInit);
+        observer.observe(slide, {
+            attributes: true,
+            attributeFilter: ['style']
+        });
+
+        window['observer_' + audioId] = observer;
+    }
+
+    // Quando metadata carregar, tentar inicializar
+    player.addEventListener('loadedmetadata', function() {
+        checkAndInit();
+    });
+
+    // Configurar observer de visibilidade
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initWhenVisible);
+        document.addEventListener('DOMContentLoaded', function() {
+            setupVisibilityObserver();
+            checkAndInit();
+        });
     } else {
-        setTimeout(initWhenVisible, 100);
+        setupVisibilityObserver();
+        checkAndInit();
     }
 })();
 </script>
